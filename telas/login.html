@@ -6,6 +6,16 @@
     <title>Login | OrcERP</title>
 </head>
 <body>
-    
+    <div class="loginContainer">
+        <form id="formLogin" action="/login" method="post" class="loginForm">
+            <label for="username" class="loginLabel">Usuário:</label>
+            <input type="text" id="username" class="loginInput" name="username" required>
+            <label for="password" class="loginLabel">Senha:</label>
+            <input type="password" 
+                class = "loginInput" id="password" name="password" required>
+            <button type="submit" id="btnEntrar">Entrar</button>
+            <button type="button" id="btnEsqueciSenha">Esqueci senha</button>
+        </form>
+    </div>
 </body>
 </html>
