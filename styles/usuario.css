@@ -1,0 +1,49 @@
+#tabelaUsuarios th:nth-child(1),
+#tabelaUsuarios td:nth-child(1) {
+    width: 10%;
+}
+
+#tabelaUsuarios th:nth-child(2),
+#tabelaUsuarios td:nth-child(2) {
+    width: 45%;
+}
+
+#tabelaUsuarios th:nth-child(3),
+#tabelaUsuarios td:nth-child(3) {
+    width: 25%;
+}
+
+#tabelaUsuarios th.acoes,
+#tabelaUsuarios td.acoes {
+    width: 20%;
+}
+
+.senha-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.senha-container input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 40px !important;
+}
+
+.btn-olho {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #718096;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-olho:hover {
+    color: #7d2d2d;
+}

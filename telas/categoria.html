@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorias | OrcERP</title>
     <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/categoria.css">
 </head>
+
 <body>
     <nav class="navBar">
         <div class="navLogo">
@@ -30,5 +33,51 @@
             <a href="./login.html">Sair</a>
         </div>
     </nav>
+
+    <div class="container">
+        <header>
+            <h1>Gerenciamento de Categorias</h1>
+            <button id="btnNovaCategoria" class="btn btn-success">Add categoria (+)</button>
+        </header>
+
+        <main>
+            <table id="tabelaCategorias">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th class="acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaCategorias">
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <div id="modalCategoria" class="modal">
+        <div class="modal-content">
+            <span class="fechar-modal" id="btnFecharModal">&times;</span>
+            <h2 id="modalTituloCategoria">Adicionar Categoria</h2>
+
+            <form id="formCategoria">
+                <input type="hidden" id="categoriaId">
+
+                <div class="form-group">
+                    <label for="descricaoCategoria">Descrição:</label>
+                    <input type="text" id="descricaoCategoria" placeholder="Digite a descrição da categoria" required>
+                </div>
+
+                <div class="form-botoes">
+                    <button type="button" id="btnCancelarCategoria" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/controllers/CategoriaController.js"></script>
+
 </body>
+
 </html>

@@ -17,7 +17,7 @@ html, body {
     background-color: #e0e0e0;
     padding: 5px 10px;
     gap: 30px;
-    width: 100%;               
+    width: 100%;              
     box-sizing: border-box;
 }
 
@@ -71,4 +71,161 @@ html, body {
 
 .navBar > div.active:hover {
     background-color: #c41515;  
+}
+
+
+/* ==========================================
+   ADICIONADO: ESTRUTURA COMPARTILHADA PARA AS TELAS DE CRUD
+   ========================================== */
+
+/* Container centralizado das telas */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+/* Alinhamento do Título e Botão superior */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    margin: 0;
+    color: #333333;
+}
+
+/* Tabelas padronizadas */
+table {
+    width: 100%;
+    border-collapse: separate; /* IMPORTANTE: 'separate' permite arredondar os cantos da tabela */
+    border-spacing: 0;
+    background-color: #ffffff;
+    border-radius: 10px;       /* Deixa os cantos da tabela redondos */
+    overflow: hidden;          /* Garante que o fundo do TH não passe do arredondamento */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0; /* Borda externa fina e suave */
+}
+
+th, td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+    font-family: sans-serif;
+}
+
+th {
+    background-color: #7d2d2d; /* NOVO: Marrom mais claro e suave para não cansar os olhos */
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Remove a borda da última linha para não chocar com o arredondamento */
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Efeito de hover nas linhas para ajudar na leitura */
+tr:hover td {
+    background-color: #f7fafc;
+}
+
+/* Alinha a coluna de botões (Ações) à direita */
+th.acoes, td.acoes {
+    text-align: right;
+}
+
+
+/* ==========================================
+   BOTÕES GLOBAIS (Ajustados com o novo tom)
+   ========================================== */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-success { 
+    background-color: #7d2d2d; /* Mesmo marrom mais suave */
+    color: white; 
+}
+.btn-success:hover { 
+    background-color: #963b3b; /* Tom levemente mais claro no hover */
+}
+.btn-success:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary { background-color: #e2e8f0; color: #4a5568; }
+.btn-secondary:hover { background-color: #cbd5e0; }
+
+/* Modais de cadastro/edição */
+.modal {
+    display: none; /* Controlado via JS */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    font-family: sans-serif;
+}
+
+.fechar-modal {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666666;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input {
+    padding: 8px 12px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #5e0c0c;
+}
+
+.form-botoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
 }

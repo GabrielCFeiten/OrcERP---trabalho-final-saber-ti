@@ -1,14 +1,8 @@
-import { supabase } from '../dbConecction/SupabaseConnection.js'; 
-import { Usuario } from '../classes/Usuario.js'; 
+import { supabase } from '../dbConecction/SupabaseConnection.js';
+import { Usuario } from '../classes/Usuario.js';
 
 export class UsuarioService {
-    
-    /**
-     * Método responsável por autenticar o usuário no banco de dados Supabase
-     * @param {string} username 
-     * @param {string} senha 
-     * @returns {Promise<{autenticado: boolean, mensagem: string, usuario?: Usuario}>}
-     */
+
     static async login(username, senha) {
         try {
             const { data, error } = await supabase
@@ -18,23 +12,17 @@ export class UsuarioService {
                 .single();
 
             if (error && error.code === 'PGRST116') {
-                return { 
-                    autenticado: false, 
-                    mensagem: 'Usuário não encontrado.' 
-                };
+                return { autenticado: false, mensagem: 'Usuário não encontrado.' };
             }
 
-            if (error) {
-                console.error('Erro retornado pelo Supabase:', error);
-                throw error;
-            }
+            if (error) throw error;
 
             if (data) {
                 const usuarioEncontrado = new Usuario(
-                    data.id,
                     data.usuario,
+                    data.nome_completo,
                     data.senha,
-                    data.nome_completo || data.nome_complete 
+                    data.id
                 );
 
                 if (usuarioEncontrado.validarSenha(senha)) {
@@ -44,22 +32,107 @@ export class UsuarioService {
                         usuario: usuarioEncontrado
                     };
                 } else {
-                    return { 
-                        autenticado: false, 
-                        mensagem: 'Senha incorreta.' 
-                    };
+                    return { autenticado: false, mensagem: 'Senha incorreta.' };
                 }
             }
 
             return { autenticado: false, mensagem: 'Usuário não cadastrado.' };
 
         } catch (error) {
-            console.error('Erro crítico dentro de UsuarioService.login:', error);
-            
-            return { 
-                autenticado: false, 
-                mensagem: 'Erro ao conectar com o servidor. Verifique o console do F12.' 
-            };
+            console.error('Erro no login:', error);
+            return { autenticado: false, mensagem: 'Erro ao conectar com o servidor.' };
+        }
+    }
+
+    static async listarTodos() {
+        try {
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('*')
+                .order('id', { ascending: true });
+
+            if (error) throw error;
+
+            return (data || []).map(u => new Usuario(
+                u.usuario,
+                u.nome_completo,
+                u.senha,
+                u.id
+            ));
+        } catch (error) {
+            console.error('Erro ao listar usuários:', error);
+            throw new Error('Não foi possível carregar a lista de usuários.');
+        }
+    }
+
+    static async salvar(usuarioInstancia) {
+        try {
+            const { error } = await supabase
+                .from('usuarios')
+                .insert([{
+                    usuario: usuarioInstancia.usuario,
+                    nome_completo: usuarioInstancia.nomeCompleto,
+                    senha: usuarioInstancia.senha
+                }]);
+
+            if (error) {
+                if (error.code === '23505') {
+                    return { sucesso: false, mensagem: 'Este nome de usuário já está em uso.' };
+                }
+                throw error;
+            }
+
+            return { sucesso: true, mensagem: 'Usuário cadastrado com sucesso!' };
+        } catch (error) {
+            console.error('Erro ao salvar usuário:', error);
+            return { sucesso: false, mensagem: 'Erro interno ao cadastrar o usuário.' };
+        }
+    }
+
+    static async editar(usuarioInstancia) {
+        try {
+            if (!usuarioInstancia.id) {
+                return { sucesso: false, mensagem: 'ID do usuário inválido para edição.' };
+            }
+
+            const { error } = await supabase
+                .from('usuarios')
+                .update({
+                    usuario: usuarioInstancia.usuario,
+                    nome_completo: usuarioInstancia.nomeCompleto,
+                    senha: usuarioInstancia.senha
+                })
+                .eq('id', usuarioInstancia.id);
+
+            if (error) {
+                if (error.code === '23505') {
+                    return { sucesso: false, mensagem: 'Este nome de usuário já está sendo usado.' };
+                }
+                throw error;
+            }
+
+            return { sucesso: true, mensagem: 'Usuário atualizado com sucesso!' };
+        } catch (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            return { sucesso: false, mensagem: 'Erro interno ao atualizar o usuário.' };
+        }
+    }
+
+    static async deletar(id) {
+        try {
+            if (!id) return { sucesso: false, mensagem: 'ID inválido.' };
+
+            const { error } = await supabase
+                .from('usuarios')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            return { sucesso: true, mensagem: 'Usuário removido com sucesso!' };
+        } catch (error) {
+            console.error('Erro ao deletar usuário:', error);
+            return { sucesso: false, mensagem: 'Erro interno ao deletar o usuário.' };
         }
     }
 }
