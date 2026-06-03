@@ -1,0 +1,74 @@
+/* ==========================================
+   ESTRUTURA GERAL DA HTML e BODY
+   ========================================== */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* ==========================================
+   ESTRUTURA GERAL DA NAVBAR
+   ========================================== */
+.navBar {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0;
+    padding: 5px 10px;
+    gap: 30px;
+    width: 100%;               
+    box-sizing: border-box;
+}
+
+.navBar .navLogo {
+    margin-right: auto !important;
+}
+
+.navBar .navSair {
+    margin-left: auto !important;
+}
+
+.navBar > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.navBar a {
+    color: #000000;
+    text-decoration: none !important;
+    font-family: sans-serif;
+    font-weight: 500;
+    padding: 8px 16px;
+    display: inline-block;
+    border-radius: 8px;           
+}
+
+.navLogo a {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.navBar > div:not(.navLogo):not(.active):hover {
+    background-color: #5e0c3c;
+    cursor: pointer;
+}
+
+.navBar > div:not(.navLogo):not(.active):hover a {
+    color: #ffffff !important;
+}
+
+.navBar > div.active {
+    background-color: #5e0c0c;  
+}
+
+.navBar > div.active a {
+    color: #ffffff !important;  
+}
+
+.navBar > div.active:hover {
+    background-color: #c41515;  
+}

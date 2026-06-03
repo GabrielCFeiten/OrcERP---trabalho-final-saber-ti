@@ -1,0 +1,119 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f6; /* Fundo claro para contrastar com o card */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* O container principal */
+.loginContainer {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* A "bolha" ou Card de Login */
+.loginForm {
+    background-color: #5e0c0c;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+}
+
+.loginForm h2 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Estrutura dos campos (Label acima do Input) */
+.inputGroup {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.loginLabel {
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Customização dos Inputs */
+.loginInput {
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* Efeito ao clicar no input */
+.loginInput:focus {
+    background-color: #e0e0e0;
+    color: #333333;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+}
+
+.loginInput::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+.loginInput:focus::placeholder {
+    color: #999999;
+}
+
+/* Área dos botões */
+.buttonGroup {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#btnEntrar {
+    background-color: #ffffff;
+    color: #5e0c0c;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#btnEntrar:hover {
+    background-color: #e0e0e0;
+}
+
+#btnEntrar:active {
+    transform: scale(0.98);
+}
+
+#btnEsqueciSenha {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+#btnEsqueciSenha:hover {
+    color: #ffffff;
+}

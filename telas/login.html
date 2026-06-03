@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | OrcERP</title>
+    <link rel="stylesheet" href="../styles/login.css">
 </head>
+
 <body>
     <div class="loginContainer">
         <form id="formLogin" class="loginForm">
-            <label for="username" class="loginLabel">Usuário:</label>
-            <input type="text" id="username" class="loginInput" name="username" required>
-            
-            <label for="password" class="loginLabel">Senha:</label>
-            <input type="password" class="loginInput" id="password" name="password" required>
-            
-            <button type="submit" id="btnEntrar">Entrar</button>
-            <button type="button" id="btnEsqueciSenha">Esqueci senha</button>
+            <h2>Acessar OrcERP</h2>
+
+            <div class="inputGroup">
+                <label for="username" class="loginLabel">Usuário</label>
+                <input type="text" id="username" class="loginInput" name="username" placeholder="Digite seu usuário"
+                    required>
+            </div>
+
+            <div class="inputGroup">
+                <label for="password" class="loginLabel">Senha</label>
+                <input type="password" class="loginInput" id="password" name="password" placeholder="Digite sua senha"
+                    required>
+            </div>
+
+            <div class="buttonGroup">
+                <button type="submit" id="btnEntrar">Entrar</button>
+                <button type="button" id="btnEsqueciSenha">Esqueci a senha</button>
+            </div>
         </form>
     </div>
 
     <script type="module" src="../../scripts/controllers/Login.js"></script>
 </body>
+
 </html>

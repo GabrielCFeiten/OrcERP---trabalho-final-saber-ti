@@ -26,8 +26,6 @@ formulario.addEventListener('submit', async (event) => {
 
             sessionStorage.setItem('usuarioLogado', resultado.usuario.nomeCompleto);
 
-            alert(resultado.mensagem);
-
             window.location.href = 'inicio.html'; 
         } else {
             alert(resultado.mensagem);
