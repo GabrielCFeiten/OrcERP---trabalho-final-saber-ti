@@ -1,0 +1,21 @@
+{
+  "name": "projeto-final",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrielCFeiten/OrcERP---trabalho-final-saber-ti.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GabrielCFeiten/OrcERP---trabalho-final-saber-ti/issues"
+  },
+  "homepage": "https://github.com/GabrielCFeiten/OrcERP---trabalho-final-saber-ti#readme"
+}

@@ -1,85 +1,65 @@
-import { supabase } from './SupabaseConnection.js';
-import { Usuario } from './Usuario.js';
+import { supabase } from '../dbConecction/SupabaseConnection.js'; 
+import { Usuario } from '../classes/Usuario.js'; 
 
 export class UsuarioService {
     
-    static async salvar(usuarioObj) {
-        const { data, error } = await supabase
-            .from('usuarios')
-            .insert([
-                { 
-                    usuario: usuarioObj.usuario, 
-                    nome_completo: usuarioObj.nomeCompleto,
-                    senha: usuarioObj.senha 
-                }
-            ])
-            .select();
-
-        if (error) throw new Error(`Erro ao salvar usuário: ${error.message}`);
-        
-        return new Usuario(data[0].usuario, data[0].nome_completo, data[0].senha, data[0].id);
-    }
-
-    static async buscarTodos() {
-        const { data, error } = await supabase
-            .from('usuarios')
-            .select('*');
-
-        if (error) throw new Error(`Erro ao buscar usuários: ${error.message}`);
-
-        return data.map(u => new Usuario(u.usuario, u.nome_completo, u.senha, u.id));
-    }
-
-    static async editar(id, novosDados) {
-        const dadosParaAtualizar = {};
-        
-        if (novosDados.usuario) dadosParaAtualizar.usuario = novosDados.usuario;
-        if (novosDados.nomeCompleto) dadosParaAtualizar.nome_completo = novosDados.nomeCompleto;
-        if (novosDados.senha) dadosParaAtualizar.senha = novosDados.senha;
-
-        const { data, error } = await supabase
-            .from('usuarios')
-            .update(dadosParaAtualizar)
-            .eq('id', id)
-            .select();
-
-        if (error) throw new Error(`Erro ao editar usuário: ${error.message}`);
-        return data.length > 0;
-    }
-
-    static async deletar(id) {
-        const { error } = await supabase
-            .from('usuarios')
-            .delete()
-            .eq('id', id);
-
-        if (error) throw new Error(`Erro ao deletar usuário: ${error.message}`);
-        return true;
-    }
-
+    /**
+     * Método responsável por autenticar o usuário no banco de dados Supabase
+     * @param {string} username 
+     * @param {string} senha 
+     * @returns {Promise<{autenticado: boolean, mensagem: string, usuario?: Usuario}>}
+     */
     static async login(username, senha) {
-        const { data, error } = await supabase
-            .from('usuarios')
-            .select('*')
-            .eq('usuario', username)
-            .single();
+        try {
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('*')
+                .eq('usuario', username)
+                .single();
 
-        // Se der erro ou não encontrar o usuário
-        if (error || !data) {
-            console.log('Usuário não encontrado ou erro na busca.');
-            return { autenticado: false, mensagem: 'Usuário ou senha incorretos.' };
-        }
+            if (error && error.code === 'PGRST116') {
+                return { 
+                    autenticado: false, 
+                    mensagem: 'Usuário não encontrado.' 
+                };
+            }
 
-        const usuarioEncontrado = new Usuario(data.usuario, data.nome_completo, data.senha, data.id);
+            if (error) {
+                console.error('Erro retornado pelo Supabase:', error);
+                throw error;
+            }
 
-        if (usuarioEncontrado.validarSenha(senha)) {
+            if (data) {
+                const usuarioEncontrado = new Usuario(
+                    data.id,
+                    data.usuario,
+                    data.senha,
+                    data.nome_completo || data.nome_complete 
+                );
+
+                if (usuarioEncontrado.validarSenha(senha)) {
+                    return {
+                        autenticado: true,
+                        mensagem: `Bem-vindo, ${usuarioEncontrado.nomeCompleto}!`,
+                        usuario: usuarioEncontrado
+                    };
+                } else {
+                    return { 
+                        autenticado: false, 
+                        mensagem: 'Senha incorreta.' 
+                    };
+                }
+            }
+
+            return { autenticado: false, mensagem: 'Usuário não cadastrado.' };
+
+        } catch (error) {
+            console.error('Erro crítico dentro de UsuarioService.login:', error);
+            
             return { 
-                autenticado: true, 
-                mensagem: 'Login realizado com sucesso!',
-                usuario: usuarioEncontrado 
+                autenticado: false, 
+                mensagem: 'Erro ao conectar com o servidor. Verifique o console do F12.' 
             };
-        } else {
-            return { autenticado: false, mensagem: 'Usuário ou senha incorretos.' };
         }
     }
 }
