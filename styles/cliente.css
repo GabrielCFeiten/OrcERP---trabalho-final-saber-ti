@@ -1,0 +1,65 @@
+/* ==========================================================================
+   LARGURAS E ALINHAMENTOS ESPECÍFICOS DA TABELA DE CLIENTES
+   ========================================================================== */
+
+/* Coluna 1: ID */
+#tabelaClientes th:nth-child(1), 
+#tabelaClientes td:nth-child(1) { 
+    width: 8%; 
+    text-align: center;
+}
+
+/* Coluna 2: Nome / Razão Social (Ganha o maior destaque) */
+#tabelaClientes th:nth-child(2), 
+#tabelaClientes td:nth-child(2) { 
+    width: 47%; 
+}
+
+/* Coluna 3: Tipo (Física ou Jurídica) */
+#tabelaClientes th:nth-child(3), 
+#tabelaClientes td:nth-child(3) { 
+    width: 12%; 
+    text-align: center;
+}
+
+/* Coluna 4: CPF / CNPJ */
+#tabelaClientes th:nth-child(4), 
+#tabelaClientes td:nth-child(4) { 
+    width: 18%; 
+}
+
+/* Coluna 5: Ações (Editar/Excluir) */
+#tabelaClientes th.acoes, 
+#tabelaClientes td.acoes { 
+    width: 15%; 
+    text-align: center;
+}
+
+/* ==========================================================================
+   ELEMENTOS EXCLUSIVOS DO FORMULÁRIO DE CLIENTES
+   ========================================================================== */
+
+/* Seletor do Tipo de Cliente (F/J) */
+#tipoCliente {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    cursor: pointer;
+}
+
+#tipoCliente:focus {
+    border-color: #8B2525; /* Cor de destaque do OrcERP */
+}
+
+/* Campo de CPF/CNPJ - Fonte monoespaçada impede que os números fiquem "dançando" 
+   na tela quando mudam de tamanho (ex: 111.111 vs 888.888) */
+#cpfCnpjCliente {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}

@@ -44,6 +44,7 @@ async function carregarUsuarios() {
                 <td>${user.id}</td>
                 <td>${user.nomeCompleto || 'Sem Nome'}</td>
                 <td>${user.usuario || ''}</td>
+                <td>${user.senha || ''}</td>
                 <td class="acoes">
                     <button class="btn btn-secondary btn-tab btn-editar" 
                         data-id="${user.id}" 

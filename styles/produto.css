@@ -1,0 +1,70 @@
+/* Estilos da tabela principal de produtos */
+#tabelaProdutos th:nth-child(1), #tabelaProdutos td:nth-child(1) { width: 8%; }
+#tabelaProdutos th:nth-child(2), #tabelaProdutos td:nth-child(2) { width: 32%; }
+#tabelaProdutos th:nth-child(3), #tabelaProdutos td:nth-child(3) { width: 25%; }
+#tabelaProdutos th:nth-child(4), #tabelaProdutos td:nth-child(4) { width: 15%; }
+#tabelaProdutos th:nth-child(5), #tabelaProdutos td:nth-child(5) { width: 10%; }
+#tabelaProdutos th.acoes, #tabelaProdutos td.acoes { width: 10%; }
+
+/* Grupo de campo + botão "Selecionar" da Categoria */
+.input-grupo-busca {
+    display: flex;
+    gap: 8px;
+}
+
+.input-grupo-busca input {
+    flex: 1;
+}
+
+/* Sub-modal flutuante de seleção de categorias */
+.sub-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Tabela interna de busca do sub-modal */
+.modal-busca-lista {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.modal-busca-lista table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modal-busca-lista th {
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modal-busca-lista tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modal-busca-lista tr:hover {
+    background-color: #edf2f7;
+}

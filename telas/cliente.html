@@ -1,34 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes | OrcERP</title>
     <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/cliente.css"> 
 </head>
+
 <body>
     <nav class="navBar">
-        <div class="navLogo">
-            <a href="./inicio.html">OrcERP</a>
-        </div>
-        <div class="navCat">
-            <a href="./categoria.html">Categorias</a>
-        </div>
-        <div class="navProd">
-            <a href="./produto.html">Produtos</a>
-        </div>
-        <div class="navCli active">
-            <a href="./cliente.html">Clientes</a>
-        </div>
-        <div class="navOrc">
-            <a href="./orcamento.html">Orçamentos</a>
-        </div>
-        <div class="navUser">
-            <a href="./usuario.html">Usuários</a>
-        </div>
-        <div class="navSair">
-            <a href="./login.html">Sair</a>
-        </div>
+        <div class="navLogo"><a href="./inicio.html">OrcERP</a></div>
+        <div class="navCat"><a href="./categoria.html">Categorias</a></div>
+        <div class="navProd"><a href="./produto.html">Produtos</a></div>
+        <div class="navCli active"><a href="./cliente.html">Clientes</a></div>
+        <div class="navOrc"><a href="./orcamento.html">Orçamentos</a></div>
+        <div class="navUser"><a href="./usuario.html">Usuários</a></div>
+        <div class="navSair"><a href="./login.html">Sair</a></div>
     </nav>
+
+    <div class="container">
+        <header>
+            <h1>Gerenciamento de Clientes</h1>
+            <button id="btnNovoCliente" class="btn btn-success">Add cliente (+)</button>
+        </header>
+
+        <main>
+            <table id="tabelaClientes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome / Razão Social</th>
+                        <th>Tipo</th>
+                        <th>CPF / CNPJ</th>
+                        <th class="acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaClientes"></tbody>
+            </table>
+        </main>
+    </div>
+
+    <div id="modalCliente" class="modal">
+        <div class="modal-content">
+            <span class="fechar-modal" id="btnFecharModal">&times;</span>
+            <h2 id="modalTituloCliente">Adicionar Cliente</h2>
+
+            <form id="formCliente">
+                <input type="hidden" id="clienteId">
+
+                <div class="form-group">
+                    <label for="tipoCliente">Tipo de Cliente:</label>
+                    <select id="tipoCliente" required>
+                        <option value="F">Pessoa Física (CPF)</option>
+                        <option value="J">Pessoa Jurídica (CNPJ)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cpfCnpjCliente" id="labelCpfCnpj">CPF:</label>
+                    <input type="text" id="cpfCnpjCliente" placeholder="000.000.000-00" maxlength="18" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nomeCliente">Nome / Razão Social:</label>
+                    <input type="text" id="nomeCliente" placeholder="Digite o nome completo ou razão social" required>
+                </div>
+
+                <div class="form-botoes">
+                    <button type="button" id="btnCancelarCliente" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/controllers/ClienteController.js"></script>
 </body>
+
 </html>

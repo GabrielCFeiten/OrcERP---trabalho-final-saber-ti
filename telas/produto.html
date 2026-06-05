@@ -1,34 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produtos | OrcERP</title>
     <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/produto.css">
 </head>
+
 <body>
     <nav class="navBar">
-        <div class="navLogo">
-            <a href="./inicio.html">OrcERP</a>
-        </div>
-        <div class="navCat">
-            <a href="./categoria.html">Categorias</a>
-        </div>
-        <div class="navProd active">
-            <a href="./produto.html">Produtos</a>
-        </div>
-        <div class="navCli">
-            <a href="./cliente.html">Clientes</a>
-        </div>
-        <div class="navOrc">
-            <a href="./orcamento.html">Orçamentos</a>
-        </div>
-        <div class="navUser">
-            <a href="./usuario.html">Usuários</a>
-        </div>
-        <div class="navSair">
-            <a href="./login.html">Sair</a>
-        </div>
+        <div class="navLogo"><a href="./inicio.html">OrcERP</a></div>
+        <div class="navCat"><a href="./categoria.html">Categorias</a></div>
+        <div class="navProd active"><a href="./produto.html">Produtos</a></div>
+        <div class="navCli"><a href="./cliente.html">Clientes</a></div>
+        <div class="navOrc"><a href="./orcamento.html">Orçamentos</a></div>
+        <div class="navUser"><a href="./usuario.html">Usuários</a></div>
+        <div class="navSair"><a href="./login.html">Sair</a></div>
     </nav>
+
+    <div class="container">
+        <header>
+            <h1>Gerenciamento de Produtos</h1>
+            <button id="btnNovoProduto" class="btn btn-success">Add produto (+)</button>
+        </header>
+
+        <main>
+            <table id="tabelaProdutos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Preço de Venda</th>
+                        <th>Status</th>
+                        <th class="acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaProdutos"></tbody>
+            </table>
+        </main>
+    </div>
+
+    <div id="modalProduto" class="modal">
+        <div class="modal-content">
+            <span class="fechar-modal" id="btnFecharModal">&times;</span>
+            <h2 id="modalTituloProduto">Adicionar Produto</h2>
+
+            <form id="formProduto">
+                <input type="hidden" id="produtoId">
+
+                <div class="form-group">
+                    <label for="descProduto">Descrição:</label>
+                    <input type="text" id="descProduto" placeholder="Digite a descrição do produto" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoriaNomeProduto">Categoria:</label>
+                    <div class="input-grupo-busca">
+                        <input type="hidden" id="categoriaIdProduto" required>
+                        <input type="text" id="categoriaNomeProduto" placeholder="Selecione uma categoria" readonly required>
+                        <button type="button" id="btnBuscarCategoria" class="btn btn-secondary">Selecionar</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="obsProduto">Observação:</label>
+                    <textarea id="obsProduto" placeholder="Observações do produto (opcional)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="precoProduto">Preço de Venda (R$):</label>
+                    <input type="number" id="precoProduto" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="statusProduto">Status:</label>
+                    <select id="statusProduto" required>
+                        <option value="ATIVO">Ativo</option>
+                        <option value="INATIVO">Inativo</option>
+                    </select>
+                </div>
+
+                <div class="form-botoes">
+                    <button type="button" id="btnCancelarProduto" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="subModalCategoria" class="sub-modal">
+        <div class="sub-modal-content">
+            <h3>Selecionar Categoria</h3>
+            <div class="modal-busca-lista">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Categoria</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabelaSelecaoCategoria"></tbody>
+                </table>
+            </div>
+            <div style="margin-top: 15px; text-align: right;">
+                <button type="button" id="btnFecharSubModal" class="btn btn-secondary">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/controllers/ProdutosController.js"></script>
 </body>
+
 </html>
