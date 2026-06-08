@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha | OrcERP</title>
+    <link rel="stylesheet" href="../styles/esqueci-senha.css">
+</head>
+
+<body>
+    <div class="loginContainer">
+        <form id="formRecuperar" class="loginForm">
+            <h2>Recuperar Senha</h2>
+
+            <div class="inputGroup">
+                <label for="username" class="loginLabel">Usuário</label>
+                <input type="text" id="username" class="loginInput" name="username" placeholder="Digite seu usuário" required>
+            </div>
+
+            <div class="inputGroup">
+                <label for="novaSenha" class="loginLabel">Senha Nova</label>
+                <input type="password" class="loginInput" id="novaSenha" name="novaSenha" placeholder="Digite sua nova senha" required>
+            </div>
+
+            <div class="inputGroup">
+                <label for="confirmarSenha" class="loginLabel">Confirmar Senha Nova</label>
+                <input type="password" class="loginInput" id="confirmarSenha" name="confirmarSenha" placeholder="Digite sua senha novamente" required>
+            </div>
+
+            <div class="buttonGroup">
+                <button type="submit" id="btnAtualizar">Atualizar Senha</button>
+                <button type="button" id="btnVoltarLogin">Voltar para o Login</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module" src="../../scripts/controllers/EsqueciSenha.js"></script>
+</body>
+
+</html>

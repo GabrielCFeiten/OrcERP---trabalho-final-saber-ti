@@ -135,4 +135,34 @@ export class UsuarioService {
             return { sucesso: false, mensagem: 'Erro interno ao deletar o usuário.' };
         }
     }
+
+    static async atualizarSenha(username, novaSenha) {
+        try {
+            // 1. Busca se o usuário realmente existe no banco
+            const { data: usuario, error: buscaError } = await supabase
+                .from('usuarios')
+                .select('id')
+                .eq('usuario', username)
+                .single();
+
+            if (buscaError && buscaError.code === 'PGRST116') {
+                return { sucesso: false, mensagem: 'Usuário não encontrado no sistema.' };
+            }
+            if (buscaError) throw buscaError;
+
+            // 2. Executa a atualização da senha utilizando o ID encontrado
+            const { error: updateError } = await supabase
+                .from('usuarios')
+                .update({ senha: novaSenha })
+                .eq('id', usuario.id);
+
+            if (updateError) throw updateError;
+
+            return { sucesso: true, mensagem: 'Senha atualizada com sucesso!' };
+
+        } catch (error) {
+            console.error('Erro na redefinição de senha no Service:', error);
+            return { sucesso: false, mensagem: 'Erro interno ao tentar atualizar a senha.' };
+        }
+    }
 }

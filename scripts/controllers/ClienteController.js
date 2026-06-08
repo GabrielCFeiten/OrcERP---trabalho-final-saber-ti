@@ -67,12 +67,14 @@ async function carregarClientes() {
                 <td>${cli.tipoCliente === 'F' ? 'Física' : 'Jurídica'}</td>
                 <td>${cli.cpfCnpjCliente}</td>
                 <td class="acoes">
-                    <button class="btn btn-secondary btn-tab btn-editar" 
-                        data-id="${cli.clienteid}" 
-                        data-tipo="${cli.tipoCliente}" 
-                        data-doc="${cli.cpfCnpjCliente}"
-                        data-nome="${cli.nomeCliente}">Editar</button>
-                    <button class="btn btn-success btn-tab btn-deletar" data-id="${cli.clienteid}">Excluir</button>
+                    <div class="botoes-acoes">
+                        <button class="btn btn-secondary btn-tab btn-editar" 
+                            data-id="${cli.clienteid}" 
+                            data-tipo="${cli.tipoCliente}" 
+                            data-doc="${cli.cpfCnpjCliente}"
+                            data-nome="${cli.nomeCliente}">Editar</button>
+                        <button class="btn btn-success btn-tab btn-deletar" data-id="${cli.clienteid}           ">Excluir</button>
+                    </div>
                 </td>
             `;
             tabelaCorpo.appendChild(tr);

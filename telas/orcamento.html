@@ -1,34 +1,199 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orçamentos | OrcERP</title>
+    <link rel="stylesheet" href="../styles/orcamento.css">
     <link rel="stylesheet" href="../styles/style.css">
+
 </head>
+
 <body>
     <nav class="navBar">
-        <div class="navLogo">
-            <a href="./inicio.html">OrcERP</a>
-        </div>
-        <div class="navCat">
-            <a href="./categoria.html">Categorias</a>
-        </div>
-        <div class="navProd">
-            <a href="./produto.html">Produtos</a>
-        </div>
-        <div class="navCli">
-            <a href="./cliente.html">Clientes</a>
-        </div>
-        <div class="navOrc active">
-            <a href="./orcamento.html">Orçamentos</a>
-        </div>
-        <div class="navUser">
-            <a href="./usuario.html">Usuários</a>
-        </div>
-        <div class="navSair">
-            <a href="./login.html">Sair</a>
-        </div>
+        <div class="navLogo"><a href="./inicio.html">OrcERP</a></div>
+        <div class="navCat"><a href="./categoria.html">Categorias</a></div>
+        <div class="navProd"><a href="./produto.html">Produtos</a></div>
+        <div class="navCli"><a href="./cliente.html">Clientes</a></div>
+        <div class="navOrc active"><a href="./orcamento.html">Orçamentos</a></div>
+        <div class="navUser"><a href="./usuario.html">Usuários</a></div>
+        <div class="navSair"><a href="./login.html">Sair</a></div>
     </nav>
+
+    <div class="container">
+        <header>
+            <h1>Histórico de Orçamentos</h1>
+            <button id="btnNovoOrcamento" class="btn btn-success">Criar Orçamento (+)</button>
+        </header>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Data Emissão</th>
+                        <th>Data Validade</th>
+                        <th>Valor Total</th>
+                        <th>Itens</th>
+                        <th class="acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaOrcamentos"></tbody>
+            </table>
+        </main>
+    </div>
+
+    <div id="modalOrcamento" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="fechar-modal" id="btnFecharModal">&times;</span>
+            <h2>Lançar Novo Orçamento</h2>
+            <form id="formOrcamento">
+
+                <div class="form-group">
+                    <label>Cliente:</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="hidden" id="orcClienteId">
+                        <input type="text" id="orcClienteNome"
+                            placeholder="Clique no botão ao lado para buscar o cliente" readonly required>
+                        <button type="button" id="btnBuscarClienteOrc" class="btn btn-secondary">Buscar</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="orcDiasValidade">Validade do Orçamento (em dias):</label>
+                    <input type="number" id="orcDiasValidade" min="1" value="7" required>
+                </div>
+
+                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <h3>Produtos do Orçamento</h3>
+
+                <div class="grid-item-add">
+                    <div style="flex: 2;">
+                        <label>Produto:</label>
+                        <input type="hidden" id="tmpProdId">
+                        <input type="text" id="tmpProdDesc" placeholder="Selecione um produto" readonly>
+                    </div>
+                    <div>
+                        <label>Preço Unitário:</label>
+                        <input type="text" id="tmpProdPreco" readonly>
+                    </div>
+                    <div style="flex: 0.5;">
+                        <label>Qtd:</label>
+                        <input type="number" id="tmpProdQtd" min="0.01" step="0.01">
+                    </div>
+                    <button type="button" id="btnAdicionarItem" class="btn btn-success"
+                        style="padding:10px 15px;">+</button>
+                    <button type="button" id="btnBuscarProdutoOrc" class="btn btn-secondary"
+                        style="padding:10px 15px;">Buscar</button>
+                </div>
+
+                <table style="margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Qtd</th>
+                            <th>Unidade</th>
+                            <th>Total Item</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoItensAdicionados"></tbody>
+                </table>
+
+                <div class="painel-total">
+                    Total do Orçamento: <span id="orcValorTotalGeral" style="font-weight:bold; color:green;">R$
+                        0.00</span>
+                </div>
+
+                <div class="form-botoes" style="margin-top:20px;">
+                    <button type="button" id="btnCancelarOrcamento" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar Orçamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="subModalCliente" class="sub-modal">
+        <div class="sub-modal-content">
+            <h3>Filtrar e Selecionar Cliente</h3>
+            <div class="busca-container">
+                <input type="text" id="txtBuscaCliente" placeholder="Pesquise por ID ou por Nome...">
+            </div>
+            <div class="tabela-rolavel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoSelecaoCliente"></tbody>
+                </table>
+            </div>
+            <div style="text-align:right; margin-top:15px;"><button type="button" id="btnFecharSubCli"
+                    class="btn btn-secondary">Fechar</button></div>
+        </div>
+    </div>
+
+    <div id="subModalProduto" class="sub-modal">
+        <div class="sub-modal-content">
+            <h3>Filtrar e Selecionar Produto</h3>
+            <div class="busca-container">
+                <input type="text" id="txtBuscaProduto" placeholder="Pesquise por ID ou por Descrição...">
+            </div>
+            <div class="tabela-rolavel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descrição</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoSelecaoProduto"></tbody>
+                </table>
+            </div>
+            <div style="text-align:right; margin-top:15px;"><button type="button" id="btnFecharSubProd"
+                    class="btn btn-secondary">Fechar</button></div>
+        </div>
+    </div>
+
+    <div id="modalResumoOrcamento" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <span class="fechar-modal" id="btnFecharModalResumo">&times;</span>
+            <h2 id="resumoTitulo">Itens do Orçamento #0</h2>
+
+            <div style="margin-bottom: 15px; font-size: 15px; color: #475569;">
+                <p><strong>Cliente:</strong> <span id="resumoCliente">...</span></p>
+                <p><strong>Data de Emissão:</strong> <span id="resumoData">...</span></p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Qtd</th>
+                        <th>Valor Unitário</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaResumo">
+                </tbody>
+            </table>
+
+            <div class="painel-total" style="margin-top: 20px;">
+                Total Geral: <span id="resumoTotalGeral" style="font-weight:bold; color:green; font-size: 20px;">R$
+                    0,00</span>
+            </div>
+
+            <div class="form-botoes" style="margin-top: 20px; text-align: right;">
+                <button type="button" id="btnFecharResumoJanela" class="btn btn-secondary">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/controllers/OrcamentoController.js"></script>
 </body>
+
 </html>

@@ -54,19 +54,21 @@ async function carregarProdutos() {
                 <td>${prod.produtoid}</td>
                 <td>${prod.dsProduto}</td>
                 <td>${prod.descCategoria}</td>
-                <td>R$ ${parseFloat(prod.vlVendaProduto).toFixed(2)}</td>
+                <td>R$ ${parseFloat(prod.vlVendaProduto).toLocaleString('pt-BR', { minimumFractionDigits:           2, maximumFractionDigits: 2 })}</td>
                 <td>${prod.statusProduto}</td>
                 <td class="acoes">
-                    <button class="btn btn-secondary btn-tab btn-editar" 
-                        data-id="${prod.produtoid}" 
-                        data-desc="${prod.dsProduto}" 
-                        data-catid="${prod.categoriaProdutoId}"
-                        data-catnome="${prod.descCategoria}"
-                        data-obs="${prod.obsProduto || ''}"
-                        data-preco="${prod.vlVendaProduto}"
-                        data-status="${prod.statusProduto}"
-                        data-data="${prod.dtCadastroProduto}">Editar</button>
-                    <button class="btn btn-success btn-tab btn-deletar" data-id="${prod.produtoid}">Excluir</button>
+                    <div class="botoes-acoes">
+                        <button class="btn btn-secondary btn-tab btn-editar" 
+                            data-id="${prod.produtoid}" 
+                            data-desc="${prod.dsProduto}" 
+                            data-catid="${prod.categoriaProdutoId}"
+                            data-catnome="${prod.descCategoria}"
+                            data-obs="${prod.obsProduto || ''}"
+                            data-preco="${prod.vlVendaProduto}"
+                            data-status="${prod.statusProduto}"
+                            data-data="${prod.dtCadastroProduto}">Editar</button>
+                        <button class="btn btn-success btn-tab btn-deletar" data-id="${prod.produtoid}          ">Excluir</button>
+                    </div>
                 </td>
             `;
             tabelaCorpo.appendChild(tr);

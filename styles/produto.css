@@ -1,10 +1,67 @@
-/* Estilos da tabela principal de produtos */
-#tabelaProdutos th:nth-child(1), #tabelaProdutos td:nth-child(1) { width: 8%; }
-#tabelaProdutos th:nth-child(2), #tabelaProdutos td:nth-child(2) { width: 32%; }
-#tabelaProdutos th:nth-child(3), #tabelaProdutos td:nth-child(3) { width: 25%; }
-#tabelaProdutos th:nth-child(4), #tabelaProdutos td:nth-child(4) { width: 15%; }
-#tabelaProdutos th:nth-child(5), #tabelaProdutos td:nth-child(5) { width: 10%; }
-#tabelaProdutos th.acoes, #tabelaProdutos td.acoes { width: 10%; }
+/* ==========================================================================
+   ESTILOS E ALINHAMENTOS DA TABELA PRINCIPAL DE PRODUTOS
+   ========================================================================== */
+
+/* ID: Centralizado */
+#tabelaProdutos th:nth-child(1), 
+#tabelaProdutos td:nth-child(1) { 
+    width: 6%; 
+    text-align: center;
+}
+
+/* Descrição: Alinhado à esquerda */
+#tabelaProdutos th:nth-child(2), 
+#tabelaProdutos td:nth-child(2) { 
+    width: 34%; 
+    text-align: left;
+}
+
+/* Categoria: Alinhado à esquerda */
+#tabelaProdutos th:nth-child(3), 
+#tabelaProdutos td:nth-child(3) { 
+    width: 20%; 
+    text-align: left;
+}
+
+/* Preço de Venda: Alinhado à esquerda */
+#tabelaProdutos th:nth-child(4), 
+#tabelaProdutos td:nth-child(4) { 
+    width: 15%; 
+    text-align: left;
+}
+
+/* Status: Alinhado à esquerda */
+#tabelaProdutos th:nth-child(5), 
+#tabelaProdutos td:nth-child(5) { 
+    width: 10%; 
+    text-align: left;
+}
+
+/* Cabeçalho de Ações: Alinhado à direita */
+#tabelaProdutos th.acoes { 
+    width: 15%; 
+    text-align: right;
+    padding-right: 24px; 
+}
+
+/* Célula de Ações: Comportamento normal de tabela */
+#tabelaProdutos td.acoes { 
+    width: 15%; 
+    text-align: right;
+    padding-right: 20px;
+}
+
+/* Container interno que segura os botões sem quebrar a tabela */
+.botoes-acoes {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   ELEMENTOS DO FORMULÁRIO DE CADASTRO / MODAL MESTRE
+   ========================================================================== */
 
 /* Grupo de campo + botão "Selecionar" da Categoria */
 .input-grupo-busca {
@@ -16,7 +73,9 @@
     flex: 1;
 }
 
-/* Sub-modal flutuante de seleção de categorias */
+/* ==========================================================================
+   SUB-MODAL FLUTUANTE DE SELEÇÃO DE CATEGORIAS
+   ========================================================================== */
 .sub-modal {
     display: none;
     position: fixed;
@@ -58,6 +117,17 @@
     position: sticky;
     top: 0;
     z-index: 10;
+    padding: 8px;
+    text-align: left;
+    font-size: 13px;
+    color: #64748b;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-busca-lista td {
+    padding: 10px 8px;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .modal-busca-lista tr {

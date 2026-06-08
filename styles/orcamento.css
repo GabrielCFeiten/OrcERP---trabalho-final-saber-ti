@@ -1,0 +1,196 @@
+/* ==========================================================================
+   ALINHAMENTOS REVISADOS DA TABELA DE HISTÓRICO (TELA PRINCIPAL)
+   ========================================================================== */
+
+/* Coluna 1: ID (Mantido centralizado e em negrito) */
+#tabelaOrcamentos th:nth-child(1),
+#corpoTabelaOrcamentos td:nth-child(1) { 
+    text-align: center; 
+    font-weight: bold; 
+    width: 8%;
+}
+
+/* Coluna 2: Cliente (Alinhado à esquerda) */
+#tabelaOrcamentos th:nth-child(2),
+#corpoTabelaOrcamentos td:nth-child(2) { 
+    text-align: left; 
+    width: 37%;
+}
+
+/* Coluna 3: Data Emissão (Alinhado à esquerda) */
+#tabelaOrcamentos th:nth-child(3),
+#corpoTabelaOrcamentos td:nth-child(3) { 
+    text-align: left; 
+    width: 15%;
+}
+
+/* Coluna 4: Data Validade (Alinhado à esquerda) */
+#tabelaOrcamentos th:nth-child(4),
+#corpoTabelaOrcamentos td:nth-child(4) { 
+    text-align: left; 
+    width: 15%;
+}
+
+/* Coluna 5: Valor Total (Corrigido para alinhar perfeitamente à esquerda) */
+#tabelaOrcamentos th:nth-child(5),
+#corpoTabelaOrcamentos td:nth-child(5) { 
+    text-align: left; 
+    width: 15%;
+}
+
+/* Coluna 6: Ações (Botão Excluir centralizado) */
+#tabelaOrcamentos th.acoes,
+#corpoTabelaOrcamentos td.acoes { 
+    text-align: center; 
+    width: 10%;
+}
+
+/* ==========================================================================
+   GRID DE INSERÇÃO DE ITENS (DENTRO DO MODAL MESTRE)
+   ========================================================================== */
+.grid-item-add {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    background-color: #fcfcfc;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px dashed #cbd5e1;
+}
+
+.grid-item-add div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Garante leitura confortável em campos apenas para visualização (readonly) */
+.grid-item-add input[readonly] {
+    background-color: #f1f5f9;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   PAINEL DE VALOR TOTAL DO ORÇAMENTO
+   ========================================================================== */
+.painel-total {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #334155;
+    padding: 10px 0;
+    border-top: 2px double #e2e8f0;
+}
+
+#orcValorTotalGeral {
+    font-size: 22px;
+    font-weight: 800;
+    color: #16a34a; /* Verde destaque para o fechamento */
+    margin-left: 8px;
+}
+
+/* ==========================================================================
+   SUB-MODAIS FLUTUANTES (SELEÇÃO DE CLIENTE / PRODUTO)
+   ========================================================================== */
+.sub-modal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-modal-content {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.sub-modal-content h3 {
+    margin-top: 0;
+    color: #1e293b;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.busca-container {
+    margin-bottom: 12px;
+}
+
+.busca-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.busca-container input:focus {
+    border-color: #8B2525;
+}
+
+/* Área interna rolável para as tabelas de busca */
+.tabela-rolavel {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.tabela-rolavel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela-rolavel th {
+    background-color: #f8fafc;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.tabela-rolavel td {
+    padding: 10px 8px;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.tabela-rolavel tr {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.tabela-rolavel tr:hover {
+    background-color: #f1f5f9;
+}
+
+.btn-info {
+    background-color: #b30009;
+    color: white;
+}
+.btn-info:hover {
+    background-color: #660005;
+}
+
+/* Garante o alinhamento correto da tabela de resumo dentro do modal */
+#corpoTabelaResumo td:nth-child(2),
+#corpoTabelaResumo td:nth-child(3),
+#corpoTabelaResumo td:nth-child(4) {
+    text-align: left;
+}

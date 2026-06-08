@@ -42,3 +42,8 @@ formulario.addEventListener('submit', async (event) => {
         btnEntrar.textContent = textoOriginalBotao;
     }
 });
+
+const btnEsqueciSenha = document.getElementById('btnEsqueciSenha');
+btnEsqueciSenha.addEventListener('click', () => {
+    window.location.href = 'esqueci-senha.html';
+});

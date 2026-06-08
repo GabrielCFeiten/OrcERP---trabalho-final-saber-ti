@@ -1,38 +1,55 @@
 /* ==========================================================================
-   LARGURAS E ALINHAMENTOS ESPECÍFICOS DA TABELA DE CLIENTES
+   ESTILOS E ALINHAMENTOS DA TABELA PRINCIPAL DE CLIENTES
    ========================================================================== */
 
-/* Coluna 1: ID */
+/* ID: Centralizado */
 #tabelaClientes th:nth-child(1), 
 #tabelaClientes td:nth-child(1) { 
-    width: 8%; 
+    width: 6%; 
     text-align: center;
 }
 
-/* Coluna 2: Nome / Razão Social (Ganha o maior destaque) */
+/* Nome do Cliente: Alinhado à esquerda */
 #tabelaClientes th:nth-child(2), 
 #tabelaClientes td:nth-child(2) { 
-    width: 47%; 
+    width: 39%; 
+    text-align: left;
 }
 
-/* Coluna 3: Tipo (Física ou Jurídica) */
+/* CPF/CNPJ: Alinhado à esquerda */
 #tabelaClientes th:nth-child(3), 
 #tabelaClientes td:nth-child(3) { 
-    width: 12%; 
-    text-align: center;
+    width: 20%; 
+    text-align: left;
 }
 
-/* Coluna 4: CPF / CNPJ */
+/* Telefone/Celular: Alinhado à esquerda */
 #tabelaClientes th:nth-child(4), 
 #tabelaClientes td:nth-child(4) { 
-    width: 18%; 
+    width: 20%; 
+    text-align: left;
 }
 
-/* Coluna 5: Ações (Editar/Excluir) */
-#tabelaClientes th.acoes, 
+/* Cabeçalho de Ações: Alinhado à direita */
+#tabelaClientes th.acoes { 
+    width: 15%; 
+    text-align: right;
+    padding-right: 24px; 
+}
+
+/* Célula de Ações: Comportamento seguro de tabela */
 #tabelaClientes td.acoes { 
     width: 15%; 
-    text-align: center;
+    text-align: right;
+    padding-right: 20px;
+}
+
+/* Container flexível interno para alinhar os botões à direita com espaçamento */
+.botoes-acoes {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
 }
 
 /* ==========================================================================
