@@ -27,6 +27,9 @@
         </header>
 
         <main>
+            <div style="margin:15px 0;">
+                <input type="text" id="campoPesquisa" placeholder="Pesquisar..." class="barra-pesquisa">
+            </div>
             <table id="tabelaUsuarios">
                 <thead>
                     <tr>
@@ -84,6 +87,20 @@
     </div>
 
     <script type="module" src="../scripts/controllers/UsuarioController.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ const campo=document.getElementById('campoPesquisa');
+ if(!campo) return;
+ campo.addEventListener('input',function(){
+   const termo=this.value.toLowerCase();
+   document.querySelectorAll('tbody tr').forEach(linha=>{
+      linha.style.display=linha.innerText.toLowerCase().includes(termo)?'':'none';
+   });
+ });
+});
+</script>
+
 </body>
 
 </html>
