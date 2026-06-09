@@ -5,41 +5,46 @@ import { ProdutoService } from '../services/ProdutoServices.js';
 import { Orcamento, OrcamentoItem } from '../classes/Orcamento.js';
 
 // ==========================================================================
-// ELEMENTOS DO DOM - TELA PRINCIPAL E HISTÓRICO
+// ELEMENTOS DO DOM - HISTÓRICO E DIÁLOGO DE FILTROS AVANÇADOS
 // ==========================================================================
 const tabelaCorpo = document.getElementById('corpoTabelaOrcamentos');
+const campoPesquisaNome = document.getElementById('campoPesquisa');
+
+const modalFiltros = document.getElementById('modalFiltrosAvancados');
+const formFiltrosAvancados = document.getElementById('formFiltrosAvancados');
+const filtroStatus = document.getElementById('filtroStatus');
+const filtroValorMin = document.getElementById('filtroValorMin');
+const filtroValorMax = document.getElementById('filtroValorMax');
+const filtroDataEmissao = document.getElementById('filtroDataEmissao');
+const btnAbrirFiltrosAvancados = document.getElementById('btnAbrirFiltrosAvancados');
+const btnFecharFiltros = document.getElementById('btnFecharFiltros');
+const btnLimparFiltros = document.getElementById('btnLimparFiltros');
+
+// Modais Principais
 const modalOrcamento = document.getElementById('modalOrcamento');
 const formOrcamento = document.getElementById('formOrcamento');
-
-// ==========================================================================
-// ELEMENTOS DO DOM - MODAL DE RESUMO DOS ITENS
-// ==========================================================================
 const modalResumo = document.getElementById('modalResumoOrcamento');
+
+// Elementos de Resumo Visual
 const resumoTitulo = document.getElementById('resumoTitulo');
 const resumoCliente = document.getElementById('resumoCliente');
 const resumoData = document.getElementById('resumoData');
 const resumoTotalGeral = document.getElementById('resumoTotalGeral');
 const corpoTabelaResumo = document.getElementById('corpoTabelaResumo');
 
-// ==========================================================================
-// ELEMENTOS DO DOM - SUB-MODAIS DE SELEÇÃO RÁPIDA
-// ==========================================================================
+// Submodais de Seleção Celular
 const subModalCliente = document.getElementById('subModalCliente');
 const subModalProduto = document.getElementById('subModalProduto');
 const txtBuscaCliente = document.getElementById('txtBuscaCliente');
 const txtBuscaProduto = document.getElementById('txtBuscaProduto');
 
-// ==========================================================================
-// ELEMENTOS DO DOM - CAMPOS DO FORMULÁRIO MESTRE
-// ==========================================================================
+// Inputs Mestre do Formulário
 const inputClienteId = document.getElementById('orcClienteId');
 const inputClienteNome = document.getElementById('orcClienteNome');
 const inputDiasValidade = document.getElementById('orcDiasValidade');
 const labelValorTotalGeral = document.getElementById('orcValorTotalGeral');
 
-// ==========================================================================
-// ELEMENTOS DO DOM - CAMPOS TEMPORÁRIOS DE PRODUTOS (ADICIONAR AO CARRINHO)
-// ==========================================================================
+// Inputs de Adicionar Item ao Carrinho Temporário
 const inputProdId = document.getElementById('tmpProdId');
 const inputProdDesc = document.getElementById('tmpProdDesc');
 const inputProdPreco = document.getElementById('tmpProdPreco');
@@ -47,35 +52,57 @@ const inputProdQtd = document.getElementById('tmpProdQtd');
 const btnAdicionarItem = document.getElementById('btnAdicionarItem');
 const tabelaItensAdicionados = document.getElementById('corpoItensAdicionados');
 
+// Botões Auxiliares Globais
+const btnNovoOrcamento = document.getElementById('btnNovoOrcamento');
+
 // ==========================================================================
-// VARIÁVEIS DE CACHE E CONTROLE DE ESTADO (MEMÓRIA)
+// VARIÁVEIS DE CONTROLE DE CONFIGURAÇÃO DE ESTADO GLOBAL
 // ==========================================================================
 let cacheClientes = [];
 let cacheProdutos = [];
 let itensCarrinho = [];
 
-// Inicialização da Tela
+// Estado local dos Filtros Avançados ativos
+let filtrosAtivos = {
+    status: 'TODOS',
+    valorMin: null,
+    valorMax: null,
+    dataEmissao: ''
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     carregarOrcamentos();
-    configurarFiltrosBusca();
+    configurarFiltrosSubModais();
+    configurarEventosFiltrosAvancados();
 });
 
-// ==========================================================================
-// HISTÓRICO PRINCIPAL: CARREGAMENTO E RENDERIZAÇÃO
-// ==========================================================================
+/* ==========================================
+   MECANISMO DE CARREGAMENTO E PROCESSO DE FILTRAGEM CUMULATIVA
+   ========================================== */
+
 async function carregarOrcamentos() {
     try {
-        tabelaCorpo.innerHTML = '<tr><td colspan="7" style="text-align:center;">Carregando orçamentos...</td></tr>';
+        tabelaCorpo.innerHTML = '<tr><td colspan="7" class="texto-centralizado">Carregando orçamentos...</td></tr>';
         const orcamentos = await OrcamentoService.listarTodos();
         tabelaCorpo.innerHTML = '';
 
         if (orcamentos.length === 0) {
-            tabelaCorpo.innerHTML = '<tr><td colspan="7" style="text-align:center;">Nenhum orçamento gerado.</td></tr>';
+            tabelaCorpo.innerHTML = '<tr><td colspan="7" class="texto-centralizado">Nenhum orçamento gerado.</td></tr>';
             return;
         }
 
         orcamentos.forEach(o => {
             const tr = document.createElement('tr');
+            
+            // Atributos de dados ocultos anexados à linha para possibilitar filtragem performática
+            tr.setAttribute('data-cliente-nome', o.nomeCliente.toLowerCase());
+            tr.setAttribute('data-valor-total', parseFloat(o.vlTotalOrcamento));
+            tr.setAttribute('data-data-emissao', o.dtOrcamento.split('T')[0]); // Formato YYYY-MM-DD
+            
+            // Cálculo do status de vencimento baseado em timestamp Unix estrutural
+            const vencido = new Date(o.dtValidadeOrcamento).getTime() < new Date().getTime();
+            tr.setAttribute('data-status-validade', vencido ? 'VENCIDOS' : 'VALIDOS');
+
             const dataFormatada = new Date(o.dtOrcamento).toLocaleDateString('pt-BR');
             const validadeFormatada = new Date(o.dtValidadeOrcamento).toLocaleDateString('pt-BR');
             const totalFormatado = `R$ ${parseFloat(o.vlTotalOrcamento).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
@@ -85,42 +112,117 @@ async function carregarOrcamentos() {
                 <td>${o.nomeCliente}</td>
                 <td>${dataFormatada}</td>
                 <td>${validadeFormatada}</td>
-                <td><strong>${totalFormatado}</strong></td>
+                <td><strong class="${vencido ? 'texto-vencido-alerta' : ''}">${totalFormatado}</strong></td>
                 <td>
-                    <button class="btn btn-info btn-tab btn-ver-itens" 
+                    <button type="button" class="btn btn-info btn-tab btn-ver-itens" 
                         data-id="${o.orcamentoid}" 
                         data-cliente="${o.nomeCliente}" 
                         data-data="${dataFormatada}" 
                         data-total="${totalFormatado}">Ver</button>
                 </td>
                 <td class="acoes">
-                    <button class="btn btn-success btn-tab btn-deletar" data-id="${o.orcamentoid}">Excluir</button>
+                    <button type="button" class="btn btn-success btn-tab btn-deletar" data-id="${o.orcamentoid}">Excluir</button>
                 </td>
             `;
             tabelaCorpo.appendChild(tr);
         });
 
         configurarEventosTabela();
+        executarFiltragemUnificada(); 
     } catch (e) {
         console.error(e);
-        tabelaCorpo.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Erro ao carregar dados dos orçamentos.</td></tr>';
+        tabelaCorpo.innerHTML = '<tr><td colspan="7" class="texto-centralizado erro-carregamento">Erro ao carregar dados dos orçamentos.</td></tr>';
     }
 }
 
+function executarFiltragemUnificada() {
+    const termoNome = campoPesquisaNome.value.toLowerCase().trim();
+    const linhas = tabelaCorpo.querySelectorAll('tr');
+
+    const mensagemAntiga = tabelaCorpo.querySelector('.sem-resultados');
+    if (mensagemAntiga) mensagemAntiga.remove();
+
+    let linhasVisiveis = 0;
+
+    linhas.forEach(linha => {
+        if (linha.cells.length === 1) return; // Ignora mensagens estruturais de carregamento
+
+        const nomeCliente = linha.getAttribute('data-cliente-nome') || '';
+        const valorTotal = parseFloat(linha.getAttribute('data-valor-total')) || 0;
+        const dataEmissao = linha.getAttribute('data-data-emissao') || '';
+        const statusValidade = linha.getAttribute('data-status-validade') || '';
+
+        // 1. Filtro por Input Text de Nome de Cliente
+        const bateNome = nomeCliente.includes(termoNome);
+
+        // 2. Filtro por Status (Vencido / Dentro do Prazo)
+        const bateStatus = (filtrosAtivos.status === 'TODOS' || statusValidade === filtrosAtivos.status);
+
+        // 3. Filtro por Faixas de Valores Mínimos e Máximos
+        const bateMin = (filtrosAtivos.valorMin === null || valorTotal >= filtrosAtivos.valorMin);
+        const bateMax = (filtrosAtivos.valorMax === null || valorTotal <= filtrosAtivos.valorMax);
+
+        // 4. Filtro por Data de Emissão (Comparação literal YYYY-MM-DD)
+        const bateData = (filtrosAtivos.dataEmissao === '' || dataEmissao === filtrosAtivos.dataEmissao);
+
+        if (bateNome && bateStatus && bateMin && bateMax && bateData) {
+            linha.style.display = '';
+            linhasVisiveis++; // INCREMENTA SE FOR EXIBIDA
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+
+    if (linhasVisiveis === 0) {
+        const trVazio = document.createElement('tr');
+        trVazio.classList.add('sem-resultados');
+        trVazio.innerHTML = '<tr><td colspan="7" class="texto-centralizado">Nenhum orçamento corresponde aos filtros aplicados.</td></tr>';
+        tabelaCorpo.appendChild(trVazio);
+    }
+}
+
+function configurarEventosFiltrosAvancados() {
+    // Abrir e Fechar Modal de Filtros
+    btnAbrirFiltrosAvancados.addEventListener('click', () => modalFiltros.style.display = 'flex');
+    btnFecharFiltros.addEventListener('click', () => modalFiltros.style.display = 'none');
+
+    // Escuta em tempo real para a barra superior por nome do cliente
+    campoPesquisaNome.addEventListener('input', executarFiltragemUnificada);
+
+    // Enviar dados de submissão do formulário de filtros avançados
+    formFiltrosAvancados.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        filtrosAtivos.status = filtroStatus.value;
+        filtrosAtivos.valorMin = filtroValorMin.value ? parseFloat(filtroValorMin.value) : null;
+        filtrosAtivos.valorMax = filtroValorMax.value ? parseFloat(filtroValorMax.value) : null;
+        filtrosAtivos.dataEmissao = filtroDataEmissao.value;
+
+        executarFiltragemUnificada();
+        modalFiltros.style.display = 'none';
+    });
+
+    // Ação do botão limpar filtros do modal
+    btnLimparFiltros.addEventListener('click', () => {
+        formFiltrosAvancados.reset();
+        filtrosAtivos = { status: 'TODOS', valorMin: null, valorMax: null, dataEmissao: '' };
+        executarFiltragemUnificada();
+        modalFiltros.style.display = 'none';
+    });
+}
+
 function configurarEventosTabela() {
-    // Cliques no botão "Ver Itens" (Abre o resumo dinâmico)
     document.querySelectorAll('.btn-ver-itens').forEach(b => {
         b.addEventListener('click', () => {
-            const id = b.getAttribute('data-id');
-            const cliente = b.getAttribute('data-cliente');
-            const data = b.getAttribute('data-data');
-            const total = b.getAttribute('data-total');
-            
-            abrirResumoOrcamento(id, cliente, data, total);
+            abrirResumoOrcamento(
+                b.getAttribute('data-id'),
+                b.getAttribute('data-cliente'),
+                b.getAttribute('data-data'),
+                b.getAttribute('data-total')
+            );
         });
     });
 
-    // Cliques no botão "Excluir" (CRUD Delete)
     document.querySelectorAll('.btn-deletar').forEach(b => {
         b.addEventListener('click', async () => {
             if (confirm('Deseja realmente cancelar/excluir este orçamento definitivamente?')) {
@@ -132,31 +234,30 @@ function configurarEventosTabela() {
     });
 }
 
-// ==========================================================================
-// LÓGICA DO MODAL DE RESUMO (CONSULTA DINÂMICA DE ITENS NO BANCO)
-// ==========================================================================
+/* ==========================================
+   LÓGICA DO MODAL DE RESUMO (CONSULTA ITENS)
+   ========================================== */
+
 async function abrirResumoOrcamento(id, nomeCliente, dataEmissao, valorTotal) {
     try {
         resumoTitulo.textContent = `Itens do Orçamento #${id}`;
         resumoCliente.textContent = nomeCliente;
         resumoData.textContent = dataEmissao;
         resumoTotalGeral.textContent = valorTotal;
-        corpoTabelaResumo.innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando itens...</td></tr>';
+        corpoTabelaResumo.innerHTML = '<tr><td colspan="4" class="texto-centralizado">Carregando itens...</td></tr>';
         
         modalResumo.style.display = 'flex';
 
-        // Consulta direto na tabela de itens usando o ID da linha clicada
         const { data: itens, error } = await supabase
             .from('orcamento_item')
             .select('*')
             .eq('orcamentoid', id);
 
         if (error) throw error;
-
         corpoTabelaResumo.innerHTML = '';
 
         if (!itens || itens.length === 0) {
-            corpoTabelaResumo.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum produto encontrado neste orçamento.</td></tr>';
+            corpoTabelaResumo.innerHTML = '<tr><td colspan="4" class="texto-centralizado">Nenhum produto encontrado neste orçamento.</td></tr>';
             return;
         }
 
@@ -170,18 +271,17 @@ async function abrirResumoOrcamento(id, nomeCliente, dataEmissao, valorTotal) {
             `;
             corpoTabelaResumo.appendChild(tr);
         });
-
     } catch (error) {
         console.error('Erro ao processar resumo dos itens:', error);
-        corpoTabelaResumo.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao recuperar itens do banco.</td></tr>';
+        corpoTabelaResumo.innerHTML = '<tr><td colspan="4" class="texto-centralizado erro-carregamento">Erro ao recuperar itens do banco.</td></tr>';
     }
 }
 
-// ==========================================================================
-// SUB-MODAIS: DINÂMICA DE FILTROS E BUSCAS EM TEMPO REAL
-// ==========================================================================
-function configurarFiltrosBusca() {
-    // Filtro instantâneo de clientes (por ID ou por Nome)
+/* ==========================================
+   SUB-MODAIS: DINÂMICA DE FILTROS INTERNOS
+   ========================================== */
+
+function configurarFiltrosSubModais() {
     txtBuscaCliente.addEventListener('input', () => {
         const termo = txtBuscaCliente.value.toLowerCase().trim();
         const filtrados = cacheClientes.filter(c => 
@@ -190,7 +290,6 @@ function configurarFiltrosBusca() {
         renderizarListaSelecaoCliente(filtrados);
     });
 
-    // Filtro instantâneo de produtos (por ID ou por Descrição)
     txtBuscaProduto.addEventListener('input', () => {
         const termo = txtBuscaProduto.value.toLowerCase().trim();
         const filtrados = cacheProdutos.filter(p => 
@@ -200,7 +299,6 @@ function configurarFiltrosBusca() {
     });
 }
 
-// Gatilho e renderização do Sub-Modal de Clientes
 document.getElementById('btnBuscarClienteOrc').addEventListener('click', async () => {
     subModalCliente.style.display = 'flex';
     txtBuscaCliente.value = '';
@@ -211,6 +309,12 @@ document.getElementById('btnBuscarClienteOrc').addEventListener('click', async (
 function renderizarListaSelecaoCliente(lista) {
     const corpo = document.getElementById('corpoSelecaoCliente');
     corpo.innerHTML = '';
+
+    if (lista.length === 0) {
+        corpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Nenhum produto encontrado.</td></tr>';
+        return;
+    }
+
     lista.forEach(c => {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td><strong>${c.clienteid}</strong></td><td>${c.nomeCliente}</td>`;
@@ -223,7 +327,6 @@ function renderizarListaSelecaoCliente(lista) {
     });
 }
 
-// Gatilho e renderização do Sub-Modal de Produtos
 document.getElementById('btnBuscarProdutoOrc').addEventListener('click', async () => {
     subModalProduto.style.display = 'flex';
     txtBuscaProduto.value = '';
@@ -234,6 +337,12 @@ document.getElementById('btnBuscarProdutoOrc').addEventListener('click', async (
 function renderizarListaSelecaoProduto(lista) {
     const corpo = document.getElementById('corpoSelecaoProduto');
     corpo.innerHTML = '';
+
+    if (lista.length === 0) {
+        corpo.innerHTML = '<tr><td colspan="2" class="texto-centralizado">Nenhum cliente encontrado.</td></tr>';
+        return;
+    }
+
     lista.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td><strong>${p.produtoid}</strong></td><td>${p.dsProduto}</td><td>R$ ${parseFloat(p.vlVendaProduto).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>`;
@@ -241,16 +350,17 @@ function renderizarListaSelecaoProduto(lista) {
             inputProdId.value = p.produtoid;
             inputProdDesc.value = p.dsProduto;
             inputProdPreco.value = p.vlVendaProduto;
-            inputProdQtd.value = 1; // Quantidade inicial sugerida
+            inputProdQtd.value = 1;
             subModalProduto.style.display = 'none';
         });
         corpo.appendChild(tr);
     });
 }
 
-// ==========================================================================
-// CONTROLE DO CARRINHO DE PRODUTOS DO ORÇAMENTO
-// ==========================================================================
+/* ==========================================
+   CONTROLE INTERNO DO CARRINHO DE ITENS
+   ========================================== */
+
 btnAdicionarItem.addEventListener('click', () => {
     const pId = inputProdId.value;
     const desc = inputProdDesc.value;
@@ -268,7 +378,6 @@ btnAdicionarItem.addEventListener('click', () => {
     itensCarrinho.push(novoItem);
     atualizarTabelaCarrinho();
 
-    // Limpa os campos de inserção temporária
     inputProdId.value = '';
     inputProdDesc.value = '';
     inputProdPreco.value = '';
@@ -287,10 +396,9 @@ function atualizarTabelaCarrinho() {
             <td>${item.qtProduto}</td>
             <td>R$ ${item.vlUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
             <td>R$ ${item.vlTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-            <td><button type="button" class="btn btn-tab" style="background-color:#d9534f; color:#fff;" data-index="${index}">&times;</button></td>
+            <td><button type="button" class="btn btn-deletar-item-carrinho" data-index="${index}">&times;</button></td>
         `;
 
-        // Remove item específico do carrinho rodando recalque visual
         tr.querySelector('button').addEventListener('click', () => {
             itensCarrinho.splice(index, 1);
             atualizarTabelaCarrinho();
@@ -302,9 +410,10 @@ function atualizarTabelaCarrinho() {
     labelValorTotalGeral.textContent = `R$ ${totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 }
 
-// ==========================================================================
-// EVENTO SUBMIT - PERSISTÊNCIA FINAL MESTRE-DETALHE
-// ==========================================================================
+/* ==========================================
+   EVENTO SUBMIT - PERSISTÊNCIA MESTRE-DETALHE
+   ========================================== */
+
 formOrcamento.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -320,7 +429,6 @@ formOrcamento.addEventListener('submit', async (e) => {
         return;
     }
 
-    // Processamento matemático de datas solicitado (Atual vs Escolha em dias)
     const dtAtual = new Date();
     const dtVencimento = new Date();
     dtVencimento.setDate(dtAtual.getDate() + diasValidade);
@@ -347,17 +455,17 @@ formOrcamento.addEventListener('submit', async (e) => {
     }
 });
 
-// ==========================================================================
-// OUVINTES GERAIS DE INTERAÇÃO DOS MODAIS (ABRIR / FECHAR)
-// ==========================================================================
-document.getElementById('btnNovoOrcamento').addEventListener('click', () => {
+/* ==========================================
+   GERENCIAMENTO DE INTERAÇÃO DE JANELAS MODAIS
+   ========================================== */
+
+btnNovoOrcamento.addEventListener('click', () => {
     formOrcamento.reset();
     itensCarrinho = [];
     atualizarTabelaCarrinho();
     modalOrcamento.style.display = 'flex';
 });
 
-// Fechamentos simples de janelas
 document.getElementById('btnFecharModal').addEventListener('click', () => modalOrcamento.style.display = 'none');
 document.getElementById('btnCancelarOrcamento').addEventListener('click', () => modalOrcamento.style.display = 'none');
 document.getElementById('btnFecharSubCli').addEventListener('click', () => subModalCliente.style.display = 'none');
@@ -365,8 +473,8 @@ document.getElementById('btnFecharSubProd').addEventListener('click', () => subM
 document.getElementById('btnFecharModalResumo').addEventListener('click', () => modalResumo.style.display = 'none');
 document.getElementById('btnFecharResumoJanela').addEventListener('click', () => modalResumo.style.display = 'none');
 
-// Fecha clicando no plano de fundo escuro externo dos modais
 window.addEventListener('click', (e) => {
     if (e.target === modalOrcamento) modalOrcamento.style.display = 'none';
     if (e.target === modalResumo) modalResumo.style.display = 'none';
+    if (e.target === modalFiltros) modalFiltros.style.display = 'none';
 });

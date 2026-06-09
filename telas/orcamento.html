@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orçamentos | OrcERP</title>
-    <link rel="stylesheet" href="../styles/orcamento.css">
     <link rel="stylesheet" href="../styles/style.css">
-
+    <link rel="stylesheet" href="../styles/orcamento.css">
 </head>
 
 <body>
@@ -24,13 +23,18 @@
     <div class="container">
         <header>
             <h1>Histórico de Orçamentos</h1>
-            <button id="btnNovoOrcamento" class="btn btn-success">Criar Orçamento (+)</button>
-        </header>
-        <main>
-            <div style="margin:15px 0;">
-                <input type="text" id="campoPesquisa" placeholder="Pesquisar..." class="barra-pesquisa">
+            <div class="acoes-header">
+                <button id="btnAbrirFiltrosAvancados" class="btn btn-secondary">Filtrar</button>
+                <button id="btnNovoOrcamento" class="btn btn-success">Criar Orçamento (+)</button>
             </div>
-            <table>
+        </header>
+
+        <main>
+            <div class="container-pesquisa-filtros">
+                <input type="text" id="campoPesquisa" placeholder="Pesquisar por nome do cliente..." class="barra-pesquisa">
+            </div>
+
+            <table id="tabelaOrcamentos">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -47,18 +51,55 @@
         </main>
     </div>
 
+    <div id="modalFiltrosAvancados" class="modal">
+        <div class="modal-content">
+            <span class="fechar-modal" id="btnFecharFiltros">&times;</span>
+            <h2>Filtros Avançados</h2>
+            <form id="formFiltrosAvancados">
+                <div class="form-group">
+                    <label for="filtroStatus">Status de Validade:</label>
+                    <select id="filtroStatus">
+                        <option value="TODOS">Todos os Orçamentos</option>
+                        <option value="VALIDOS">Válidos (Dentro do prazo)</option>
+                        <option value="VENCIDOS">Vencidos</option>
+                    </select>
+                </div>
+
+                <div class="form-row-valores">
+                    <div class="form-group">
+                        <label for="filtroValorMin">Valor Mínimo (R$):</label>
+                        <input type="number" id="filtroValorMin" min="0" step="0.01" placeholder="0,00">
+                    </div>
+                    <div class="form-group">
+                        <label for="filtroValorMax">Valor Máximo (R$):</label>
+                        <input type="number" id="filtroValorMax" min="0" step="0.01" placeholder="Sem limite">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="filtroDataEmissao">Data de Emissão:</label>
+                    <input type="date" id="filtroDataEmissao">
+                </div>
+
+                <div class="form-botoes">
+                    <button type="button" id="btnLimparFiltros" class="btn btn-secondary">Limpar Filtros</button>
+                    <button type="submit" class="btn btn-success">Aplicar Filtros</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="modalOrcamento" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content modal-mestre">
             <span class="fechar-modal" id="btnFecharModal">&times;</span>
             <h2>Lançar Novo Orçamento</h2>
             <form id="formOrcamento">
 
                 <div class="form-group">
                     <label>Cliente:</label>
-                    <div style="display:flex; gap:8px;">
+                    <div class="container-input-busca">
                         <input type="hidden" id="orcClienteId">
-                        <input type="text" id="orcClienteNome"
-                            placeholder="Clique no botão ao lado para buscar o cliente" readonly required>
+                        <input type="text" id="orcClienteNome" placeholder="Selecione um cliente ao lado" readonly required>
                         <button type="button" id="btnBuscarClienteOrc" class="btn btn-secondary">Buscar</button>
                     </div>
                 </div>
@@ -68,48 +109,45 @@
                     <input type="number" id="orcDiasValidade" min="1" value="7" required>
                 </div>
 
-                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <hr class="divisor-modal">
                 <h3>Produtos do Orçamento</h3>
 
                 <div class="grid-item-add">
-                    <div style="flex: 2;">
+                    <div class="col-produto">
                         <label>Produto:</label>
                         <input type="hidden" id="tmpProdId">
                         <input type="text" id="tmpProdDesc" placeholder="Selecione um produto" readonly>
                     </div>
-                    <div>
+                    <div class="col-preco">
                         <label>Preço Unitário:</label>
                         <input type="text" id="tmpProdPreco" readonly>
                     </div>
-                    <div style="flex: 0.5;">
+                    <div class="col-qtd">
                         <label>Qtd:</label>
                         <input type="number" id="tmpProdQtd" min="0.01" step="0.01">
                     </div>
-                    <button type="button" id="btnAdicionarItem" class="btn btn-success"
-                        style="padding:10px 15px;">+</button>
-                    <button type="button" id="btnBuscarProdutoOrc" class="btn btn-secondary"
-                        style="padding:10px 15px;">Buscar</button>
+                    <button type="button" id="btnAdicionarItem" class="btn btn-success">+</button>
+                    <button type="button" id="btnBuscarProdutoOrc" class="btn btn-secondary">Buscar</button>
                 </div>
 
-                <table style="margin-top:10px;">
+                <table id="tabelaItensCarrinho">
                     <thead>
                         <tr>
                             <th>Produto</th>
                             <th>Qtd</th>
                             <th>Unidade</th>
                             <th>Total Item</th>
-                            <th></th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody id="corpoItensAdicionados"></tbody>
                 </table>
 
                 <div class="painel-total">
-                    Total do Orçamento: <span id="orcValorTotalGeral" style="font-weight:bold; color:green;">R$
-                        0.00</span>
+                    Total do Orçamento: <span id="orcValorTotalGeral">R$ 0,00</span>
                 </div>
 
-                <div class="form-botoes" style="margin-top:20px;">
+                <div class="form-botoes">
                     <button type="button" id="btnCancelarOrcamento" class="btn btn-secondary">Cancelar</button>
                     <button type="submit" class="btn btn-success">Salvar Orçamento</button>
                 </div>
@@ -134,8 +172,9 @@
                     <tbody id="corpoSelecaoCliente"></tbody>
                 </table>
             </div>
-            <div style="text-align:right; margin-top:15px;"><button type="button" id="btnFecharSubCli"
-                    class="btn btn-secondary">Fechar</button></div>
+            <div class="container-fechar-sub">
+                <button type="button" id="btnFecharSubCli" class="btn btn-secondary">Fechar</button>
+            </div>
         </div>
     </div>
 
@@ -157,17 +196,18 @@
                     <tbody id="corpoSelecaoProduto"></tbody>
                 </table>
             </div>
-            <div style="text-align:right; margin-top:15px;"><button type="button" id="btnFecharSubProd"
-                    class="btn btn-secondary">Fechar</button></div>
+            <div class="container-fechar-sub">
+                <button type="button" id="btnFecharSubProd" class="btn btn-secondary">Fechar</button>
+            </div>
         </div>
     </div>
 
     <div id="modalResumoOrcamento" class="modal">
-        <div class="modal-content" style="max-width: 550px;">
+        <div class="modal-content modal-resumo">
             <span class="fechar-modal" id="btnFecharModalResumo">&times;</span>
             <h2 id="resumoTitulo">Itens do Orçamento #0</h2>
 
-            <div style="margin-bottom: 15px; font-size: 15px; color: #475569;">
+            <div class="meta-dados-resumo">
                 <p><strong>Cliente:</strong> <span id="resumoCliente">...</span></p>
                 <p><strong>Data de Emissão:</strong> <span id="resumoData">...</span></p>
             </div>
@@ -181,36 +221,20 @@
                         <th>Total</th>
                     </tr>
                 </thead>
-                <tbody id="corpoTabelaResumo">
-                </tbody>
+                <tbody id="corpoTabelaResumo"></tbody>
             </table>
 
-            <div class="painel-total" style="margin-top: 20px;">
-                Total Geral: <span id="resumoTotalGeral" style="font-weight:bold; color:green; font-size: 20px;">R$
-                    0,00</span>
+            <div class="painel-total">
+                Total Geral: <span id="resumoTotalGeral">R$ 0,00</span>
             </div>
 
-            <div class="form-botoes" style="margin-top: 20px; text-align: right;">
+            <div class="form-botoes">
                 <button type="button" id="btnFecharResumoJanela" class="btn btn-secondary">Fechar</button>
             </div>
         </div>
     </div>
 
     <script type="module" src="../scripts/controllers/OrcamentoController.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded',function(){
- const campo=document.getElementById('campoPesquisa');
- if(!campo) return;
- campo.addEventListener('input',function(){
-   const termo=this.value.toLowerCase();
-   document.querySelectorAll('tbody tr').forEach(linha=>{
-      linha.style.display=linha.innerText.toLowerCase().includes(termo)?'':'none';
-   });
- });
-});
-</script>
-
 </body>
 
 </html>

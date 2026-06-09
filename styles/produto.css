@@ -59,6 +59,7 @@
     gap: 8px;
 }
 
+
 /* ==========================================================================
    ELEMENTOS DO FORMULÁRIO DE CADASTRO / MODAL MESTRE
    ========================================================================== */
@@ -73,9 +74,11 @@
     flex: 1;
 }
 
+
 /* ==========================================================================
    SUB-MODAL FLUTUANTE DE SELEÇÃO DE CATEGORIAS
    ========================================================================== */
+
 .sub-modal {
     display: none;
     position: fixed;
@@ -137,4 +140,45 @@
 
 .modal-busca-lista tr:hover {
     background-color: #edf2f7;
+}
+
+
+/* ==========================================================================
+   NOVOS ESTILOS: ESTRUTURA DO HEADER E MODAL DE FILTROS AVANÇADOS
+   ========================================================================== */
+
+/* Alinhamento dos botões no cabeçalho da página */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-botoes {
+    display: flex;
+    gap: 10px;
+}
+
+/* Estrutura para alinhar inputs em colunas (Preço Mínimo e Máximo) */
+.form-row-2col {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row-2col .form-group {
+    flex: 1;
+}
+
+/* Garante o comportamento correto do modal de filtros na tela */
+#modalFiltros.modal {
+    display: none;
+    position: fixed;
+    z-index: 1500;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
 }

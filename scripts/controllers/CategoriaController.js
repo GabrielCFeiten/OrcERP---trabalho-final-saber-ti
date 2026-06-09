@@ -1,11 +1,14 @@
-import { CategoriaService } from '../services/CategoriaService.js'; // Ajuste o caminho se necessário
+import { CategoriaService } from '../services/CategoriaService.js'; 
 import { Categoria } from '../classes/Categoria.js';
 
-// Elements do DOM
+// Elementos do DOM Principal
 const tabelaCorpo = document.getElementById('corpoTabelaCategorias');
 const modal = document.getElementById('modalCategoria');
 const formCategoria = document.getElementById('formCategoria');
 const modalTitulo = document.getElementById('modalTituloCategoria');
+
+// Campo de Pesquisa
+const campoPesquisa = document.getElementById('campoPesquisa');
 
 // Campos do Formulário
 const inputId = document.getElementById('categoriaId');
@@ -20,25 +23,24 @@ const btnCancelarCategoria = document.getElementById('btnCancelarCategoria');
 document.addEventListener('DOMContentLoaded', carregarCategorias);
 
 /* ==========================================
-   FUNÇÕES DE RENDERIZAÇÃO E CARREGAMENTO
+   FUNÇÕES DE RENDERIZAÇÃO E FILTRAGEM
    ========================================== */
 
 async function carregarCategorias() {
     try {
-        tabelaCorpo.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando categorias...</td></tr>';
+        tabelaCorpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Carregando categorias...</td></tr>';
         
-        const categorias = await CategoriaService.listarTodos();
+        const categories = await CategoriaService.listarTodos();
         tabelaCorpo.innerHTML = ''; // Limpa a mensagem de carregando
 
-        if (categorias.length === 0) {
-            tabelaCorpo.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhuma categoria encontrada.</td></tr>';
+        if (categories.length === 0) {
+            tabelaCorpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Nenhuma categoria encontrada.</td></tr>';
             return;
         }
 
-        categorias.forEach(categoria => {
+        categories.forEach(categoria => {
             const tr = document.createElement('tr');
             
-            // Note que usei propriedades genéricas baseadas no seu CategoriaService (.id e .descricao)
             tr.innerHTML = `
                 <td>${categoria.id}</td>
                 <td>${categoria.descricao}</td>
@@ -51,16 +53,17 @@ async function carregarCategorias() {
             tabelaCorpo.appendChild(tr);
         });
 
-        // Adiciona os eventos nos botões recém-criados da tabela
         configurarEventosTabela();
+        
+        // Reaplica o filtro caso haja algum termo digitado durante a atualização técnica
+        filtrarCategorias();
 
     } catch (error) {
         alert(error.message);
-        tabelaCorpo.innerHTML = '<tr><td colspan="3" style="text-align:center; color: red;">Erro ao carregar os dados.</td></tr>';
+        tabelaCorpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado erro-carregamento">Erro ao carregar os dados.</td></tr>';
     }
 }
 
-// Vincula as funções de editar e deletar aos botões dinâmicos da tabela
 function configurarEventosTabela() {
     // Botões de Editar
     document.querySelectorAll('.btn-editar').forEach(botao => {
@@ -86,6 +89,28 @@ function configurarEventosTabela() {
     });
 }
 
+// Filtra a tabela focando exclusivamente na coluna "Descrição" (Coluna 2)
+function filtrarCategorias() {
+    if (!campoPesquisa) return;
+
+    const termo = campoPesquisa.value.toLowerCase();
+    const linhas = tabelaCorpo.querySelectorAll('tr');
+
+    linhas.forEach(linha => {
+        // Ignora estruturas de uma única célula (Ex: Mensagens de "Carregando" ou "Nenhuma cadastrada")
+        if (linha.cells.length === 1) return;
+
+        // Captura textualmente o conteúdo da célula de Descrição (Índice 1 correspondente ao segundo td)
+        const descricao = linha.cells[1]?.textContent.toLowerCase() || '';
+
+        if (descricao.includes(termo)) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+}
+
 /* ==========================================
    FUNÇÕES DE CONTROLE DO MODAL
    ========================================== */
@@ -93,7 +118,7 @@ function configurarEventosTabela() {
 function abrirModalParaCadastro() {
     modalTitulo.textContent = 'Adicionar Categoria';
     formCategoria.reset();
-    inputId.value = ''; // Garante que o ID oculto está vazio
+    inputId.value = ''; 
     modal.style.display = 'flex';
 }
 
@@ -125,10 +150,8 @@ formCategoria.addEventListener('submit', async (event) => {
     let resposta;
 
     if (id) {
-        // Se possui ID no input hidden, trata-se de uma atualização
         resposta = await CategoriaService.editar(categoriaInstancia);
     } else {
-        // Se não possui ID, trata-se de um novo registro
         resposta = await CategoriaService.salvar(categoriaInstancia);
     }
 
@@ -136,19 +159,23 @@ formCategoria.addEventListener('submit', async (event) => {
 
     if (resposta.sucesso) {
         fecharModal();
-        carregarCategorias(); // Atualiza a listagem em tempo real
+        carregarCategorias(); 
     }
 });
 
 /* ==========================================
-   ATRIBUIÇÃO DE EVENTOS DOS BOTÕES FIXOS
+   ATRIBUIÇÃO DOS EVENTOS DE ESCUTA
    ========================================== */
+
+// Evento de digitação na barra de pesquisa
+if (campoPesquisa) {
+    campoPesquisa.addEventListener('input', filtrarCategorias);
+}
 
 btnNovaCategoria.addEventListener('click', abrirModalParaCadastro);
 btnFecharModal.addEventListener('click', fecharModal);
 btnCancelarCategoria.addEventListener('click', fecharModal);
 
-// Fecha o modal caso o usuário clique na parte escura de fora do card
 window.addEventListener('click', (event) => {
     if (event.target === modal) {
         fecharModal();

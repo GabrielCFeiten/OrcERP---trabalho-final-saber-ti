@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +7,6 @@
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/produto.css">
 </head>
-
 <body>
     <nav class="navBar">
         <div class="navLogo"><a href="./inicio.html">OrcERP</a></div>
@@ -23,12 +21,15 @@
     <div class="container">
         <header>
             <h1>Gerenciamento de Produtos</h1>
-            <button id="btnNovoProduto" class="btn btn-success">Add produto (+)</button>
+            <div class="header-botoes">
+                <button id="btnAbrirFiltros" class="btn btn-secondary">Filtrar</button>
+                <button id="btnNovoProduto" class="btn btn-success">Add produto (+)</button>
+            </div>
         </header>
 
         <main>
             <div style="margin:15px 0;">
-                <input type="text" id="campoPesquisa" placeholder="Pesquisar..." class="barra-pesquisa">
+                <input type="text" id="campoPesquisa" placeholder="Pesquisar por nome do produto..." class="barra-pesquisa">
             </div>
             <table id="tabelaProdutos">
                 <thead>
@@ -114,21 +115,43 @@
         </div>
     </div>
 
+    <div id="modalFiltros" class="modal">
+        <div class="modal-content">
+            <span class="fechar-modal" id="btnFecharModalFiltros">&times;</span>
+            <h2>Filtros Avançados</h2>
+            <form id="formFiltros">
+                <div class="form-group">
+                    <label for="filtroCategoria">Categoria:</label>
+                    <select id="filtroCategoria">
+                        <option value="">Todas as Categorias</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filtroStatus">Status:</label>
+                    <select id="filtroStatus">
+                        <option value="">Todos</option>
+                        <option value="ATIVO">Ativo</option>
+                        <option value="INATIVO">Inativo</option>
+                    </select>
+                </div>
+                <div class="form-row-2col">
+                    <div class="form-group">
+                        <label for="filtroPrecoMin">Preço Mínimo (R$):</label>
+                        <input type="number" id="filtroPrecoMin" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="filtroPrecoMax">Preço Máximo (R$):</label>
+                        <input type="number" id="filtroPrecoMax" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="form-botoes">
+                    <button type="button" id="btnLimparFiltros" class="btn btn-secondary">Limpar Filtros</button>
+                    <button type="submit" class="btn btn-success">Aplicar Filtros</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="../scripts/controllers/ProdutosController.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded',function(){
- const campo=document.getElementById('campoPesquisa');
- if(!campo) return;
- campo.addEventListener('input',function(){
-   const termo=this.value.toLowerCase();
-   document.querySelectorAll('tbody tr').forEach(linha=>{
-      linha.style.display=linha.innerText.toLowerCase().includes(termo)?'':'none';
-   });
- });
-});
-</script>
-
 </body>
-
 </html>

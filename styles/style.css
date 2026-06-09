@@ -238,3 +238,30 @@ th.acoes, td.acoes {
     border-radius: 6px;
     box-sizing: border-box;
 }
+
+/* Layout da barra superior de pesquisa e filtros do sistema */
+.container-pesquisa-filtros {
+    margin: 15px 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.container-pesquisa-filtros .barra-pesquisa {
+    flex: 1;
+}
+
+.grupo-filtros {
+    display: flex;
+    gap: 5px;
+}
+
+/* Classes utilitárias compartilhadas para feedback nas tabelas */
+.texto-centralizado {
+    text-align: center;
+}
+
+.erro-carregamento {
+    color: #c41515;
+    font-weight: 500;
+}

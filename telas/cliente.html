@@ -27,9 +27,16 @@
         </header>
 
         <main>
-            <div style="margin:15px 0;">
-                <input type="text" id="campoPesquisa" placeholder="Pesquisar..." class="barra-pesquisa">
+            <div class="container-pesquisa-filtros">
+                <input type="text" id="campoPesquisa" placeholder="Pesquisar por nome ou documento..." class="barra-pesquisa">
+                
+                <div class="grupo-filtros">
+                    <button type="button" class="btn btn-filtro active" data-tipo="TODOS">Todos</button>
+                    <button type="button" class="btn btn-filtro" data-tipo="F">Física</button>
+                    <button type="button" class="btn btn-filtro" data-tipo="J">Jurídica</button>
+                </div>
             </div>
+
             <table id="tabelaClientes">
                 <thead>
                     <tr>
@@ -80,20 +87,6 @@
     </div>
 
     <script type="module" src="../scripts/controllers/ClienteController.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded',function(){
- const campo=document.getElementById('campoPesquisa');
- if(!campo) return;
- campo.addEventListener('input',function(){
-   const termo=this.value.toLowerCase();
-   document.querySelectorAll('tbody tr').forEach(linha=>{
-      linha.style.display=linha.innerText.toLowerCase().includes(termo)?'':'none';
-   });
- });
-});
-</script>
-
 </body>
 
 </html>

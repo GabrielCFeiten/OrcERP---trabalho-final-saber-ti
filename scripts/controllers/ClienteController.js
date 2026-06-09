@@ -8,6 +8,11 @@ const modal = document.getElementById('modalCliente');
 const formCliente = document.getElementById('formCliente');
 const modalTitulo = document.getElementById('modalTituloCliente');
 
+// Campos de Pesquisa e Filtros
+const campoPesquisa = document.getElementById('campoPesquisa');
+const botoesFiltro = document.querySelectorAll('.btn-filtro');
+let tipoSelecionado = 'TODOS'; // Estado global do filtro de tipo
+
 // Campos do Formulário
 const inputId = document.getElementById('clienteId');
 const inputTipo = document.getElementById('tipoCliente');
@@ -26,7 +31,6 @@ document.addEventListener('DOMContentLoaded', carregarClientes);
    DINÂMICA DE INPUTS (CPF vs CNPJ)
    ========================================== */
 
-// Altera o rótulo e placeholder visual dependendo do tipo selecionado
 inputTipo.addEventListener('change', () => {
     if (inputTipo.value === 'F') {
         labelCpfCnpj.textContent = 'CPF:';
@@ -35,17 +39,15 @@ inputTipo.addEventListener('change', () => {
         labelCpfCnpj.textContent = 'CNPJ:';
         inputDocumento.placeholder = '00.000.000/0001-00';
     }
-    // Formata o valor atual se o usuário mudar o select com texto já digitado
     inputDocumento.value = ClienteUtils.formatarDocumento(inputDocumento.value);
 });
 
-// Quando o usuário sai do campo de documento, ele formata com pontos/traços automaticamente
 inputDocumento.addEventListener('blur', (e) => {
     e.target.value = ClienteUtils.formatarDocumento(e.target.value);
 });
 
 /* ==========================================
-   FUNÇÕES DE RENDERIZAÇÃO DA TABELA
+   FUNÇÕES DE RENDERIZAÇÃO E FILTRAGEM
    ========================================== */
 
 async function carregarClientes() {
@@ -73,7 +75,7 @@ async function carregarClientes() {
                             data-tipo="${cli.tipoCliente}" 
                             data-doc="${cli.cpfCnpjCliente}"
                             data-nome="${cli.nomeCliente}">Editar</button>
-                        <button class="btn btn-success btn-tab btn-deletar" data-id="${cli.clienteid}           ">Excluir</button>
+                        <button class="btn btn-success btn-tab btn-deletar" data-id="${cli.clienteid}">Excluir</button>
                     </div>
                 </td>
             `;
@@ -81,6 +83,9 @@ async function carregarClientes() {
         });
 
         configurarEventosTabela();
+
+        // Reaplica os filtros caso o usuário já tenha digitado ou selecionado algo antes da atualização
+        filtrarClientes();
     } catch (error) {
         console.error(error);
         tabelaCorpo.innerHTML = '<tr><td colspan="5" style="text-align:center; color: red;">Erro ao carregar dados dos clientes.</td></tr>';
@@ -101,13 +106,49 @@ function configurarEventosTabela() {
 
     document.querySelectorAll('.btn-deletar').forEach(botao => {
         botao.addEventListener('click', async () => {
-            const id = botao.getAttribute('data-id');
+            const id = botao.getAttribute('data-id').trim();
             if (confirm('Deseja realmente remover este cliente?')) {
                 const resultado = await ClienteService.deletar(id);
                 alert(resultado.mensagem);
                 if (resultado.sucesso) carregarClientes();
             }
         });
+    });
+}
+
+function filtrarClientes() {
+    if (!campoPesquisa) return;
+
+    const termo = campoPesquisa.value.toLowerCase();
+    const linhas = tabelaCorpo.querySelectorAll('tr');
+
+    linhas.forEach(linha => {
+        // Ignora linhas de mensagens estruturais (carregando / vazio)
+        if (linha.cells.length === 1) return;
+
+        const nome = linha.cells[1]?.textContent.toLowerCase() || '';
+        const tipoClienteNaLinha = linha.cells[2]?.textContent.trim();
+        const documento = linha.cells[3]?.textContent.toLowerCase() || '';
+
+        // Filtro 1: Texto (Nome ou CPF/CNPJ)
+        const bateTexto = nome.includes(termo) || documento.includes(termo);
+
+        // Filtro 2: Tipo de Pessoa (Física ou Jurídica)
+        let bateTipo = false;
+        if (tipoSelecionado === 'TODOS') {
+            bateTipo = true;
+        } else if (tipoSelecionado === 'F' && tipoClienteNaLinha === 'Física') {
+            bateTipo = true;
+        } else if (tipoSelecionado === 'J' && tipoClienteNaLinha === 'Jurídica') {
+            bateTipo = true;
+        }
+
+        // Exibe se atender a ambos os critérios
+        if (bateTexto && bateTipo) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
     });
 }
 
@@ -129,7 +170,6 @@ function abrirModalParaEdicao(id, tipo, doc, nome) {
     inputId.value = id;
     inputTipo.value = tipo;
     
-    // Dispara manualmente a atualização visual do label/placeholder
     inputTipo.dispatchEvent(new Event('change'));
     
     inputDocumento.value = doc;
@@ -143,7 +183,7 @@ function fecharModal() {
 }
 
 /* ==========================================
-   EVENTO SUBMIT (SALVAR / ATUALIZAR)
+   EVENTOS DE INTERAÇÃO (SUBMIT E CLIQUES)
    ========================================== */
 
 formCliente.addEventListener('submit', async (event) => {
@@ -154,7 +194,6 @@ formCliente.addEventListener('submit', async (event) => {
     const documentoDigitado = inputDocumento.value;
     const nome = inputNome.value.trim();
 
-    // Executa a validação matemática antes de avançar para o banco de dados
     const documentoValido = tipo === 'F' 
         ? ClienteUtils.validarCPF(documentoDigitado) 
         : ClienteUtils.validarCNPJ(documentoDigitado);
@@ -162,10 +201,9 @@ formCliente.addEventListener('submit', async (event) => {
     if (!documentoValido) {
         alert(`O ${tipo === 'F' ? 'CPF' : 'CNPJ'} digitado é inválido. Por favor, verifique os números.`);
         inputDocumento.focus();
-        return; // Interrompe o envio
+        return;
     }
 
-    // Instancia a classe passando o documento (que será auto-formatado pelo Service)
     const clienteInstancia = new Cliente(
         tipo,
         documentoDigitado,
@@ -185,6 +223,21 @@ formCliente.addEventListener('submit', async (event) => {
         fecharModal();
         carregarClientes();
     }
+});
+
+// Vinculação dos eventos de pesquisa e filtros dinâmicos
+if (campoPesquisa) {
+    campoPesquisa.addEventListener('input', filtrarClientes);
+}
+
+botoesFiltro.forEach(botao => {
+    botao.addEventListener('click', () => {
+        botoesFiltro.forEach(b => b.classList.remove('active'));
+        botao.classList.add('active');
+
+        tipoSelecionado = botao.getAttribute('data-tipo');
+        filtrarClientes();
+    });
 });
 
 // Eventos de clique para fechamento do modal

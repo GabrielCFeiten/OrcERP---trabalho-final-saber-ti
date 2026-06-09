@@ -41,9 +41,10 @@
         </header>
 
         <main>
-            <div style="margin:15px 0;">
-                <input type="text" id="campoPesquisa" placeholder="Pesquisar..." class="barra-pesquisa">
+            <div class="container-pesquisa-filtros">
+                <input type="text" id="campoPesquisa" placeholder="Pesquisar por descrição..." class="barra-pesquisa">
             </div>
+            
             <table id="tabelaCategorias">
                 <thead>
                     <tr>
@@ -52,8 +53,7 @@
                         <th class="acoes">Ações</th>
                     </tr>
                 </thead>
-                <tbody id="corpoTabelaCategorias">
-                </tbody>
+                <tbody id="corpoTabelaCategorias"></tbody>
             </table>
         </main>
     </div>
@@ -80,21 +80,6 @@
     </div>
 
     <script type="module" src="../scripts/controllers/CategoriaController.js"></script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded',function(){
- const campo=document.getElementById('campoPesquisa');
- if(!campo) return;
- campo.addEventListener('input',function(){
-   const termo=this.value.toLowerCase();
-   document.querySelectorAll('tbody tr').forEach(linha=>{
-      linha.style.display=linha.innerText.toLowerCase().includes(termo)?'':'none';
-   });
- });
-});
-</script>
-
 </body>
 
 </html>
