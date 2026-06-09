@@ -19,6 +19,7 @@ const filtroDataEmissao = document.getElementById('filtroDataEmissao');
 const btnAbrirFiltrosAvancados = document.getElementById('btnAbrirFiltrosAvancados');
 const btnFecharFiltros = document.getElementById('btnFecharFiltros');
 const btnLimparFiltros = document.getElementById('btnLimparFiltros');
+const btnImprimirOrcamento = document.getElementById('btnImprimirOrcamento');
 
 // Modais Principais
 const modalOrcamento = document.getElementById('modalOrcamento');
@@ -477,4 +478,240 @@ window.addEventListener('click', (e) => {
     if (e.target === modalOrcamento) modalOrcamento.style.display = 'none';
     if (e.target === modalResumo) modalResumo.style.display = 'none';
     if (e.target === modalFiltros) modalFiltros.style.display = 'none';
+});
+
+// ==========================================================================
+// FUNÇÃO PARA GERAR E IMPRIMIR O PDF DO ORÇAMENTO
+// ==========================================================================
+btnImprimirOrcamento.addEventListener('click', () => {
+    // Coleta as informações atuais do modal de resumo
+    const tituloTexto = resumoTitulo.textContent; // Ex: "Itens do Orçamento #100"
+    const numeroOrcamento = tituloTexto.replace(/\D/g, ''); // Extrai apenas os números
+    
+    const cliente = resumoCliente.textContent;
+    const dataEmissao = resumoData.textContent;
+    
+    // Como a validade não está explícita no resumo de itens, calculamos ou buscamos a partir da linha ativa da tabela
+    let dataValidade = "...";
+    const linhaCorrespondente = tabelaCorpo.querySelector(`tr td:first-child`);
+    if (linhaCorrespondente) {
+        // Busca a linha real na tabela para capturar a data de validade formatada da 4ª coluna
+        const linhas = tabelaCorpo.querySelectorAll('tr');
+        for (let row of linhas) {
+            if (row.cells[0] && row.cells[0].textContent == numeroOrcamento) {
+                dataValidade = row.cells[3].textContent;
+                break;
+            }
+        }
+    }
+
+    const valorTotalGeral = resumoTotalGeral.textContent;
+
+    // Coleta as linhas de itens cadastradas na tabela de resumo
+    let itensHtml = '';
+    const linhasItens = corpoTabelaResumo.querySelectorAll('tr');
+    
+    linhasItens.forEach(linha => {
+        if (linha.cells.length >= 4) {
+            const produto = linha.cells[0].textContent;
+            const quantidade = linha.cells[1].textContent;
+            const valorUnitario = linha.cells[2].textContent;
+            const totalItem = linha.cells[3].textContent;
+            
+            // Nota: Se você não tiver a categoria salva no DOM do resumo, o ideal é omitir ou buscar do cache de produtos. 
+            // Como pedido na estrutura: (nome do produto, quantidade, valor unitário, valor total)
+            itensHtml += `
+                <tr>
+                    <td>${produto}</td>
+                    <td style="text-align: center;">${quantidade}</td>
+                    <td style="text-align: right;">${valorUnitario}</td>
+                    <td style="text-align: right;">${totalItem}</td>
+                </tr>
+            `;
+        }
+    });
+
+    // Cria uma nova janela invisível/temporária para renderizar o layout do PDF limpo
+    const janelaImpressao = window.open('', '_blank', 'width=900,height=1100');
+    
+    janelaImpressao.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <title>Orçamento #${numeroOrcamento}</title>
+            <style>
+                @page {
+                    size: A4;
+                    margin: 20mm 15mm;
+                }
+                body {
+                    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    color: #333;
+                    margin: 0;
+                    padding: 0;
+                    font-size: 11pt;
+                    line-height: 1.4;
+                }
+                .header-container {
+                    border-bottom: 3px solid #1a5c96;
+                    padding-bottom: 12px;
+                    margin-bottom: 30px;
+                }
+                .header-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .header-table td {
+                    border: none;
+                    padding: 0;
+                }
+                .titulo-orcamento {
+                    font-size: 24pt;
+                    font-weight: bold;
+                    color: #1a5c96;
+                    text-transform: uppercase;
+                }
+                .empresa-dados {
+                    text-align: right;
+                    font-size: 9pt;
+                    color: #666;
+                }
+                .meta-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background-color: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 4px;
+                    margin-bottom: 30px;
+                }
+                .meta-table th {
+                    background-color: #f1f5f9;
+                    color: #475569;
+                    font-weight: bold;
+                    text-align: left;
+                    padding: 10px 12px;
+                    font-size: 9pt;
+                    text-transform: uppercase;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                .meta-table td {
+                    padding: 12px;
+                    font-size: 11pt;
+                }
+                .meta-table td:not(:last-child), .meta-table th:not(:last-child) {
+                    border-right: 1px solid #e2e8f0;
+                }
+                .itens-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 30px;
+                }
+                .itens-table th {
+                    background-color: #1a5c96;
+                    color: #ffffff;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    font-size: 9pt;
+                    padding: 10px 12px;
+                    border: 1px solid #1a5c96;
+                }
+                .itens-table td {
+                    padding: 10px 12px;
+                    border-bottom: 1px solid #e2e8f0;
+                    border-left: 1px solid #e2e8f0;
+                    border-right: 1px solid #e2e8f0;
+                }
+                .itens-table tr:nth-child(even) {
+                    background-color: #f8fafc;
+                }
+                .barra-total {
+                    background-color: #1a5c96;
+                    color: white;
+                    text-align: right;
+                    padding: 15px 20px;
+                    font-size: 16pt;
+                    font-weight: bold;
+                    border-radius: 4px;
+                    margin-top: 20px;
+                }
+                .barra-total span {
+                    margin-left: 15px;
+                }
+                .footer-observacao {
+                    margin-top: 50px;
+                    font-size: 9pt;
+                    color: #64748b;
+                    border-top: 1px dashed #cbd5e1;
+                    padding-top: 15px;
+                }
+                @media print {
+                    .no-print { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header-container">
+                <table class="header-table">
+                    <tr>
+                        <td class="titulo-orcamento">Orçamento #${numeroOrcamento}</td>
+                        <td class="empresa-dados">
+                            <strong>OrcERP Propostas</strong><br>
+                            Maringá, PR<br>
+                            Sistema de Gestão Comercial
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <table class="meta-table">
+                <thead>
+                    <tr>
+                        <th>Nome do Cliente</th>
+                        <th>Data de Emissão</th>
+                        <th>Data de Vencimento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>${cliente}</strong></td>
+                        <td>${dataEmissao}</td>
+                        <td>${dataValidade}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="itens-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; width: 50%;">Nome do Produto</th>
+                        <th style="text-align: center; width: 10%;">Qtd</th>
+                        <th style="text-align: right; width: 20%;">Valor Unitário</th>
+                        <th style="text-align: right; width: 20%;">Valor Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itensHtml}
+                </tbody>
+            </table>
+
+            <div class="barra-total">
+                VALOR TOTAL GERAL: <span>${valorTotalGeral}</span>
+            </div>
+
+            <div class="footer-observacao">
+                * Documento gerado via OrcERP. Válido até a data de vencimento estipulada acima.
+            </div>
+
+            <script>
+                // Executa o comando de impressão assim que carregar a estrutura do arquivo
+                window.onload = function() {
+                    window.print();
+                    setTimeout(function() { window.close(); }, 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    janelaImpressao.document.close();
 });
