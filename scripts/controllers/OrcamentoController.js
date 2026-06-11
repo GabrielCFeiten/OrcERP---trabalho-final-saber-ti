@@ -4,9 +4,7 @@ import { ClienteService } from '../services/ClienteService.js';
 import { ProdutoService } from '../services/ProdutoServices.js';
 import { Orcamento, OrcamentoItem } from '../classes/Orcamento.js';
 
-// ==========================================================================
-// ELEMENTOS DO DOM - HISTÓRICO E DIÁLOGO DE FILTROS AVANÇADOS
-// ==========================================================================
+
 const tabelaCorpo = document.getElementById('corpoTabelaOrcamentos');
 const campoPesquisaNome = document.getElementById('campoPesquisa');
 
@@ -56,9 +54,8 @@ const tabelaItensAdicionados = document.getElementById('corpoItensAdicionados');
 // Botões Auxiliares Globais
 const btnNovoOrcamento = document.getElementById('btnNovoOrcamento');
 
-// ==========================================================================
 // VARIÁVEIS DE CONTROLE DE CONFIGURAÇÃO DE ESTADO GLOBAL
-// ==========================================================================
+
 let cacheClientes = [];
 let cacheProdutos = [];
 let itensCarrinho = [];
@@ -95,12 +92,10 @@ async function carregarOrcamentos() {
         orcamentos.forEach(o => {
             const tr = document.createElement('tr');
             
-            // Atributos de dados ocultos anexados à linha para possibilitar filtragem performática
             tr.setAttribute('data-cliente-nome', o.nomeCliente.toLowerCase());
             tr.setAttribute('data-valor-total', parseFloat(o.vlTotalOrcamento));
-            tr.setAttribute('data-data-emissao', o.dtOrcamento.split('T')[0]); // Formato YYYY-MM-DD
+            tr.setAttribute('data-data-emissao', o.dtOrcamento.split('T')[0]); 
             
-            // Cálculo do status de vencimento baseado em timestamp Unix estrutural
             const vencido = new Date(o.dtValidadeOrcamento).getTime() < new Date().getTime();
             tr.setAttribute('data-status-validade', vencido ? 'VENCIDOS' : 'VALIDOS');
 
@@ -146,7 +141,7 @@ function executarFiltragemUnificada() {
     let linhasVisiveis = 0;
 
     linhas.forEach(linha => {
-        if (linha.cells.length === 1) return; // Ignora mensagens estruturais de carregamento
+        if (linha.cells.length === 1) return;
 
         const nomeCliente = linha.getAttribute('data-cliente-nome') || '';
         const valorTotal = parseFloat(linha.getAttribute('data-valor-total')) || 0;
@@ -168,7 +163,7 @@ function executarFiltragemUnificada() {
 
         if (bateNome && bateStatus && bateMin && bateMax && bateData) {
             linha.style.display = '';
-            linhasVisiveis++; // INCREMENTA SE FOR EXIBIDA
+            linhasVisiveis++; 
         } else {
             linha.style.display = 'none';
         }
@@ -183,14 +178,11 @@ function executarFiltragemUnificada() {
 }
 
 function configurarEventosFiltrosAvancados() {
-    // Abrir e Fechar Modal de Filtros
     btnAbrirFiltrosAvancados.addEventListener('click', () => modalFiltros.style.display = 'flex');
     btnFecharFiltros.addEventListener('click', () => modalFiltros.style.display = 'none');
 
-    // Escuta em tempo real para a barra superior por nome do cliente
     campoPesquisaNome.addEventListener('input', executarFiltragemUnificada);
 
-    // Enviar dados de submissão do formulário de filtros avançados
     formFiltrosAvancados.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -203,7 +195,6 @@ function configurarEventosFiltrosAvancados() {
         modalFiltros.style.display = 'none';
     });
 
-    // Ação do botão limpar filtros do modal
     btnLimparFiltros.addEventListener('click', () => {
         formFiltrosAvancados.reset();
         filtrosAtivos = { status: 'TODOS', valorMin: null, valorMax: null, dataEmissao: '' };
@@ -484,18 +475,15 @@ window.addEventListener('click', (e) => {
 // FUNÇÃO PARA GERAR E IMPRIMIR O PDF DO ORÇAMENTO
 // ==========================================================================
 btnImprimirOrcamento.addEventListener('click', () => {
-    // Coleta as informações atuais do modal de resumo
-    const tituloTexto = resumoTitulo.textContent; // Ex: "Itens do Orçamento #100"
-    const numeroOrcamento = tituloTexto.replace(/\D/g, ''); // Extrai apenas os números
+    const tituloTexto = resumoTitulo.textContent;
+    const numeroOrcamento = tituloTexto.replace(/\D/g, '');
     
     const cliente = resumoCliente.textContent;
     const dataEmissao = resumoData.textContent;
-    
-    // Como a validade não está explícita no resumo de itens, calculamos ou buscamos a partir da linha ativa da tabela
+
     let dataValidade = "...";
     const linhaCorrespondente = tabelaCorpo.querySelector(`tr td:first-child`);
     if (linhaCorrespondente) {
-        // Busca a linha real na tabela para capturar a data de validade formatada da 4ª coluna
         const linhas = tabelaCorpo.querySelectorAll('tr');
         for (let row of linhas) {
             if (row.cells[0] && row.cells[0].textContent == numeroOrcamento) {
@@ -507,7 +495,6 @@ btnImprimirOrcamento.addEventListener('click', () => {
 
     const valorTotalGeral = resumoTotalGeral.textContent;
 
-    // Coleta as linhas de itens cadastradas na tabela de resumo
     let itensHtml = '';
     const linhasItens = corpoTabelaResumo.querySelectorAll('tr');
     
@@ -517,9 +504,7 @@ btnImprimirOrcamento.addEventListener('click', () => {
             const quantidade = linha.cells[1].textContent;
             const valorUnitario = linha.cells[2].textContent;
             const totalItem = linha.cells[3].textContent;
-            
-            // Nota: Se você não tiver a categoria salva no DOM do resumo, o ideal é omitir ou buscar do cache de produtos. 
-            // Como pedido na estrutura: (nome do produto, quantidade, valor unitário, valor total)
+
             itensHtml += `
                 <tr>
                     <td>${produto}</td>
@@ -531,7 +516,6 @@ btnImprimirOrcamento.addEventListener('click', () => {
         }
     });
 
-    // Cria uma nova janela invisível/temporária para renderizar o layout do PDF limpo
     const janelaImpressao = window.open('', '_blank', 'width=900,height=1100');
     
     janelaImpressao.document.write(`
@@ -704,7 +688,6 @@ btnImprimirOrcamento.addEventListener('click', () => {
             </div>
 
             <script>
-                // Executa o comando de impressão assim que carregar a estrutura do arquivo
                 window.onload = function() {
                     window.print();
                     setTimeout(function() { window.close(); }, 500);

@@ -5,7 +5,7 @@ export class Orcamento {
         this.dtOrcamento = dtOrcamento;
         this.dtValidadeOrcamento = dtValidadeOrcamento;
         this.vlTotalOrcamento = vlTotalOrcamento;
-        this.itens = []; // Array que vai guardar as instâncias de OrcamentoItem
+        this.itens = [];
     }
 }
 

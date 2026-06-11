@@ -132,18 +132,20 @@
                     <button type="button" id="btnBuscarProdutoOrc" class="btn btn-secondary">Buscar</button>
                 </div>
 
-                <table id="tabelaItensCarrinho">
-                    <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Qtd</th>
-                            <th>Unidade</th>
-                            <th>Total Item</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpoItensAdicionados"></tbody>
-                </table>
+                <div class="carrinho-rolavel">
+                    <table id="tabelaItensCarrinho">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Qtd</th>
+                                <th>Unidade</th>
+                                <th>Total Item</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoItensAdicionados"></tbody>
+                    </table>
+                </div>
 
                 <div class="painel-total">
                     Total do Orçamento: <span id="orcValorTotalGeral">R$ 0,00</span>
@@ -214,17 +216,19 @@
                 <p><strong>Data de Emissão:</strong> <span id="resumoData">...</span></p>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Qtd</th>
-                        <th>Valor Unitário</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTabelaResumo"></tbody>
-            </table>
+            <div class="carrinho-rolavel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Qtd</th>
+                            <th>Valor Unitário</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabelaResumo"></tbody>
+                </table>
+            </div>
 
             <div class="painel-total">
                 Total Geral: <span id="resumoTotalGeral">R$ 0,00</span>

@@ -11,7 +11,7 @@ const modalTitulo = document.getElementById('modalTituloCliente');
 // Campos de Pesquisa e Filtros
 const campoPesquisa = document.getElementById('campoPesquisa');
 const botoesFiltro = document.querySelectorAll('.btn-filtro');
-let tipoSelecionado = 'TODOS'; // Estado global do filtro de tipo
+let tipoSelecionado = 'TODOS'; 
 
 // Campos do Formulário
 const inputId = document.getElementById('clienteId');
@@ -84,7 +84,6 @@ async function carregarClientes() {
 
         configurarEventosTabela();
 
-        // Reaplica os filtros caso o usuário já tenha digitado ou selecionado algo antes da atualização
         filtrarClientes();
     } catch (error) {
         console.error(error);
@@ -123,14 +122,12 @@ function filtrarClientes() {
     const linhas = tabelaCorpo.querySelectorAll('tr');
 
     linhas.forEach(linha => {
-        // Ignora linhas de mensagens estruturais (carregando / vazio)
         if (linha.cells.length === 1) return;
 
         const nome = linha.cells[1]?.textContent.toLowerCase() || '';
         const tipoClienteNaLinha = linha.cells[2]?.textContent.trim();
         const documento = linha.cells[3]?.textContent.toLowerCase() || '';
 
-        // Filtro 1: Texto (Nome ou CPF/CNPJ)
         const bateTexto = nome.includes(termo) || documento.includes(termo);
 
         // Filtro 2: Tipo de Pessoa (Física ou Jurídica)
@@ -143,7 +140,6 @@ function filtrarClientes() {
             bateTipo = true;
         }
 
-        // Exibe se atender a ambos os critérios
         if (bateTexto && bateTipo) {
             linha.style.display = '';
         } else {
@@ -225,7 +221,6 @@ formCliente.addEventListener('submit', async (event) => {
     }
 });
 
-// Vinculação dos eventos de pesquisa e filtros dinâmicos
 if (campoPesquisa) {
     campoPesquisa.addEventListener('input', filtrarClientes);
 }
@@ -240,7 +235,6 @@ botoesFiltro.forEach(botao => {
     });
 });
 
-// Eventos de clique para fechamento do modal
 btnNovoCliente.addEventListener('click', abrirModalParaCadastro);
 btnFecharModal.addEventListener('click', fecharModal);
 btnCancelarCliente.addEventListener('click', fecharModal);

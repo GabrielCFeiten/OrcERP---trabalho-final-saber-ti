@@ -38,24 +38,32 @@
     width: 10%;
 }
 
-/* Alertas Visuais */
 .texto-vencido-alerta {
     color: #c41515 !important;
 }
 
-/* Elementos do Header */
 .acoes-header {
     display: flex;
     gap: 10px;
 }
 
-/* Estruturas Internas de Modais Modificados */
+/* ==========================================================================
+   ESTRUTURAS INTERNAS DE MODAIS MODIFICADOS (Com travas de altura)
+   ========================================================================== */
 .modal-content.modal-mestre {
     max-width: 700px;
+    max-height: 90vh;     
+    overflow-y: auto;     
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-content.modal-resumo {
     max-width: 550px;
+    max-height: 90vh;    
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-row-valores {
@@ -129,6 +137,37 @@
 
 .btn-deletar-item-carrinho:hover {
     background-color: #963b3b;
+}
+
+/* ==========================================================================
+   CONTEÚDO DOS CARRINHOS ROLÁVEIS (CORREÇÃO LANÇAMENTO E EXIBIÇÃO)
+   ========================================================================== */
+.carrinho-rolavel {
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.carrinho-rolavel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.carrinho-rolavel table th {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 2;
+    box-shadow: inset 0 -1px 0 #e2e8f0;
+    padding: 10px 8px;
+    text-align: left;
+}
+
+.carrinho-rolavel table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 /* ==========================================================================

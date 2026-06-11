@@ -79,7 +79,6 @@ html, body {
    ADICIONADO: ESTRUTURA COMPARTILHADA PARA AS TELAS DE CRUD
    ========================================== */
 
-/* Container centralizado das telas */
 .container {
     max-width: 1200px;
     margin: 40px auto;
@@ -88,7 +87,6 @@ html, body {
     font-family: sans-serif;
 }
 
-/* Alinhamento do Título e Botão superior */
 header {
     display: flex;
     justify-content: space-between;
@@ -101,16 +99,15 @@ header h1 {
     color: #333333;
 }
 
-/* Tabelas padronizadas */
 table {
     width: 100%;
-    border-collapse: separate; /* IMPORTANTE: 'separate' permite arredondar os cantos da tabela */
+    border-collapse: separate; 
     border-spacing: 0;
     background-color: #ffffff;
-    border-radius: 10px;       /* Deixa os cantos da tabela redondos */
-    overflow: hidden;          /* Garante que o fundo do TH não passe do arredondamento */
+    border-radius: 10px;       
+    overflow: hidden;          
     box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    border: 1px solid #e2e8f0; /* Borda externa fina e suave */
+    border: 1px solid #e2e8f0; 
 }
 
 th, td {
@@ -121,26 +118,22 @@ th, td {
 }
 
 th {
-    background-color: #7d2d2d; /* NOVO: Marrom mais claro e suave para não cansar os olhos */
+    background-color: #7d2d2d; 
     color: #ffffff;
     font-weight: 600;
 }
 
-/* Remove a borda da última linha para não chocar com o arredondamento */
 tr:last-child td {
     border-bottom: none;
 }
 
-/* Efeito de hover nas linhas para ajudar na leitura */
 tr:hover td {
     background-color: #f7fafc;
 }
 
-/* Alinha a coluna de botões (Ações) à direita */
 th.acoes, td.acoes {
     text-align: right;
 }
-
 
 /* ==========================================
    BOTÕES GLOBAIS (Ajustados com o novo tom)
@@ -155,11 +148,11 @@ th.acoes, td.acoes {
 }
 
 .btn-success { 
-    background-color: #7d2d2d; /* Mesmo marrom mais suave */
+    background-color: #7d2d2d; 
     color: white; 
 }
 .btn-success:hover { 
-    background-color: #963b3b; /* Tom levemente mais claro no hover */
+    background-color: #963b3b;
 }
 .btn-success:active {
     transform: scale(0.98);
@@ -168,9 +161,8 @@ th.acoes, td.acoes {
 .btn-secondary { background-color: #e2e8f0; color: #4a5568; }
 .btn-secondary:hover { background-color: #cbd5e0; }
 
-/* Modais de cadastro/edição */
 .modal {
-    display: none; /* Controlado via JS */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -239,7 +231,6 @@ th.acoes, td.acoes {
     box-sizing: border-box;
 }
 
-/* Layout da barra superior de pesquisa e filtros do sistema */
 .container-pesquisa-filtros {
     margin: 15px 0;
     display: flex;
@@ -256,7 +247,6 @@ th.acoes, td.acoes {
     gap: 5px;
 }
 
-/* Classes utilitárias compartilhadas para feedback nas tabelas */
 .texto-centralizado {
     text-align: center;
 }

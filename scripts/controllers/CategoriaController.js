@@ -31,7 +31,7 @@ async function carregarCategorias() {
         tabelaCorpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Carregando categorias...</td></tr>';
         
         const categories = await CategoriaService.listarTodos();
-        tabelaCorpo.innerHTML = ''; // Limpa a mensagem de carregando
+        tabelaCorpo.innerHTML = '';
 
         if (categories.length === 0) {
             tabelaCorpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Nenhuma categoria encontrada.</td></tr>';
@@ -55,7 +55,6 @@ async function carregarCategorias() {
 
         configurarEventosTabela();
         
-        // Reaplica o filtro caso haja algum termo digitado durante a atualização técnica
         filtrarCategorias();
 
     } catch (error) {
@@ -65,7 +64,6 @@ async function carregarCategorias() {
 }
 
 function configurarEventosTabela() {
-    // Botões de Editar
     document.querySelectorAll('.btn-editar').forEach(botao => {
         botao.addEventListener('click', () => {
             const id = botao.getAttribute('data-id');
@@ -74,7 +72,6 @@ function configurarEventosTabela() {
         });
     });
 
-    // Botões de Deletar
     document.querySelectorAll('.btn-deletar').forEach(botao => {
         botao.addEventListener('click', async () => {
             const id = botao.getAttribute('data-id');
@@ -97,10 +94,9 @@ function filtrarCategorias() {
     const linhas = tabelaCorpo.querySelectorAll('tr');
 
     linhas.forEach(linha => {
-        // Ignora estruturas de uma única célula (Ex: Mensagens de "Carregando" ou "Nenhuma cadastrada")
+        
         if (linha.cells.length === 1) return;
 
-        // Captura textualmente o conteúdo da célula de Descrição (Índice 1 correspondente ao segundo td)
         const descricao = linha.cells[1]?.textContent.toLowerCase() || '';
 
         if (descricao.includes(termo)) {
@@ -167,7 +163,6 @@ formCategoria.addEventListener('submit', async (event) => {
    ATRIBUIÇÃO DOS EVENTOS DE ESCUTA
    ========================================== */
 
-// Evento de digitação na barra de pesquisa
 if (campoPesquisa) {
     campoPesquisa.addEventListener('input', filtrarCategorias);
 }

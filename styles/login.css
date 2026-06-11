@@ -9,7 +9,6 @@ body {
     min-height: 100vh;
 }
 
-/* O container principal */
 .loginContainer {
     width: 100%;
     max-width: 400px;
@@ -17,7 +16,6 @@ body {
     box-sizing: border-box;
 }
 
-/* A "bolha" ou Card de Login */
 .loginForm {
     background-color: #5e0c0c;
     padding: 40px 30px;
@@ -34,7 +32,6 @@ body {
     font-weight: 600;
 }
 
-/* Estrutura dos campos (Label acima do Input) */
 .inputGroup {
     margin-bottom: 20px;
     display: flex;
@@ -48,7 +45,6 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Customização dos Inputs */
 .loginInput {
     padding: 12px 16px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -60,7 +56,6 @@ body {
     outline: none;
 }
 
-/* Efeito ao clicar no input */
 .loginInput:focus {
     background-color: #e0e0e0;
     color: #333333;
@@ -75,7 +70,6 @@ body {
     color: #999999;
 }
 
-/* Área dos botões */
 .buttonGroup {
     margin-top: 30px;
     display: flex;

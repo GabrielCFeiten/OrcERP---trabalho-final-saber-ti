@@ -2,49 +2,42 @@
    ESTILOS E ALINHAMENTOS DA TABELA PRINCIPAL DE CLIENTES
    ========================================================================== */
 
-/* ID: Centralizado */
 #tabelaClientes th:nth-child(1), 
 #tabelaClientes td:nth-child(1) { 
     width: 6%; 
     text-align: center;
 }
 
-/* Nome do Cliente: Alinhado à esquerda */
 #tabelaClientes th:nth-child(2), 
 #tabelaClientes td:nth-child(2) { 
     width: 39%; 
     text-align: left;
 }
 
-/* CPF/CNPJ: Alinhado à esquerda */
 #tabelaClientes th:nth-child(3), 
 #tabelaClientes td:nth-child(3) { 
     width: 20%; 
     text-align: left;
 }
 
-/* Telefone/Celular: Alinhado à esquerda */
 #tabelaClientes th:nth-child(4), 
 #tabelaClientes td:nth-child(4) { 
     width: 20%; 
     text-align: left;
 }
 
-/* Cabeçalho de Ações: Alinhado à direita */
 #tabelaClientes th.acoes { 
     width: 15%; 
     text-align: right;
     padding-right: 24px; 
 }
 
-/* Célula de Ações: Comportamento seguro de tabela */
 #tabelaClientes td.acoes { 
     width: 15%; 
     text-align: right;
     padding-right: 20px;
 }
 
-/* Container flexível interno para alinhar os botões à direita com espaçamento */
 .botoes-acoes {
     display: flex;
     justify-content: flex-end;
@@ -56,7 +49,6 @@
    ELEMENTOS EXCLUSIVOS DO FORMULÁRIO DE CLIENTES
    ========================================================================== */
 
-/* Seletor do Tipo de Cliente (F/J) */
 #tipoCliente {
     width: 100%;
     padding: 10px;
@@ -70,22 +62,19 @@
 }
 
 #tipoCliente:focus {
-    border-color: #8B2525; /* Cor de destaque do OrcERP */
+    border-color: #8B2525;
 }
 
-/* Campo de CPF/CNPJ - Fonte monoespaçada impede que os números fiquem "dançando" 
-   na tela quando mudam de tamanho (ex: 111.111 vs 888.888) */
 #cpfCnpjCliente {
     font-family: 'Courier New', Courier, monospace;
     font-size: 15px;
     letter-spacing: 0.5px;
 }
 
-/* Customização local dos botões de filtro de clientes */
 .grupo-filtros .btn-filtro {
     cursor: pointer;
     opacity: 0.5;
-    background-color: #333333; /* Um tom cinza padrão secundário */
+    background-color: #333333;
     color: #fff;
     border: 1px solid transparent;
     transition: all 0.2s ease-in-out;
@@ -95,7 +84,6 @@
     opacity: 0.8;
 }
 
-/* Estado ativo: destaca qual filtro está aplicando as regras na tabela */
 .grupo-filtros .btn-filtro.active {
     opacity: 1;
     background-color: #5e0c0c;

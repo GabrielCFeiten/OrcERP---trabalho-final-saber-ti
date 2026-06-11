@@ -2,56 +2,48 @@
    ESTILOS E ALINHAMENTOS DA TABELA PRINCIPAL DE PRODUTOS
    ========================================================================== */
 
-/* ID: Centralizado */
 #tabelaProdutos th:nth-child(1), 
 #tabelaProdutos td:nth-child(1) { 
     width: 6%; 
     text-align: center;
 }
 
-/* Descrição: Alinhado à esquerda */
 #tabelaProdutos th:nth-child(2), 
 #tabelaProdutos td:nth-child(2) { 
     width: 34%; 
     text-align: left;
 }
 
-/* Categoria: Alinhado à esquerda */
 #tabelaProdutos th:nth-child(3), 
 #tabelaProdutos td:nth-child(3) { 
     width: 20%; 
     text-align: left;
 }
 
-/* Preço de Venda: Alinhado à esquerda */
 #tabelaProdutos th:nth-child(4), 
 #tabelaProdutos td:nth-child(4) { 
     width: 15%; 
     text-align: left;
 }
 
-/* Status: Alinhado à esquerda */
 #tabelaProdutos th:nth-child(5), 
 #tabelaProdutos td:nth-child(5) { 
     width: 10%; 
     text-align: left;
 }
 
-/* Cabeçalho de Ações: Alinhado à direita */
 #tabelaProdutos th.acoes { 
     width: 15%; 
     text-align: right;
     padding-right: 24px; 
 }
 
-/* Célula de Ações: Comportamento normal de tabela */
 #tabelaProdutos td.acoes { 
     width: 15%; 
     text-align: right;
     padding-right: 20px;
 }
 
-/* Container interno que segura os botões sem quebrar a tabela */
 .botoes-acoes {
     display: flex;
     justify-content: flex-end;
@@ -64,7 +56,6 @@
    ELEMENTOS DO FORMULÁRIO DE CADASTRO / MODAL MESTRE
    ========================================================================== */
 
-/* Grupo de campo + botão "Selecionar" da Categoria */
 .input-grupo-busca {
     display: flex;
     gap: 8px;
@@ -73,7 +64,6 @@
 .input-grupo-busca input {
     flex: 1;
 }
-
 
 /* ==========================================================================
    SUB-MODAL FLUTUANTE DE SELEÇÃO DE CATEGORIAS
@@ -101,7 +91,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Tabela interna de busca do sub-modal */
 .modal-busca-lista {
     max-height: 200px;
     overflow-y: auto;
@@ -147,7 +136,6 @@
    NOVOS ESTILOS: ESTRUTURA DO HEADER E MODAL DE FILTROS AVANÇADOS
    ========================================================================== */
 
-/* Alinhamento dos botões no cabeçalho da página */
 header {
     display: flex;
     justify-content: space-between;
@@ -159,7 +147,6 @@ header {
     gap: 10px;
 }
 
-/* Estrutura para alinhar inputs em colunas (Preço Mínimo e Máximo) */
 .form-row-2col {
     display: flex;
     gap: 15px;
@@ -169,7 +156,6 @@ header {
     flex: 1;
 }
 
-/* Garante o comportamento correto do modal de filtros na tela */
 #modalFiltros.modal {
     display: none;
     position: fixed;

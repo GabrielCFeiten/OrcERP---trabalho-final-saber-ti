@@ -1,15 +1,14 @@
-/* Definição de larguras específicas para as colunas da tabela de categorias */
 #tabelaCategorias th:nth-child(1), 
 #tabelaCategorias td:nth-child(1) {
-    width: 10%; /* Coluna ID pequena */
+    width: 10%;
 }
 
 #tabelaCategorias th:nth-child(2), 
 #tabelaCategorias td:nth-child(2) {
-    width: 65%; /* Coluna Nome ganha mais espaço */
+    width: 65%;
 }
 
 #tabelaCategorias th.acoes, 
 #tabelaCategorias td.acoes {
-    width: 25%; /* Espaço reservado para os botões editar/excluir */
+    width: 25%; 
 }
