@@ -55,7 +55,6 @@ const tabelaItensAdicionados = document.getElementById('corpoItensAdicionados');
 const btnNovoOrcamento = document.getElementById('btnNovoOrcamento');
 
 // VARIÁVEIS DE CONTROLE DE CONFIGURAÇÃO DE ESTADO GLOBAL
-
 let cacheClientes = [];
 let cacheProdutos = [];
 let itensCarrinho = [];
@@ -133,14 +132,14 @@ async function carregarOrcamentos() {
 
 function executarFiltragemUnificada() {
     const termoNome = campoPesquisaNome.value.toLowerCase().trim();
-    const linhas = tabelaCorpo.querySelectorAll('tr');
+    const lines = tabelaCorpo.querySelectorAll('tr');
 
     const mensagemAntiga = tabelaCorpo.querySelector('.sem-resultados');
     if (mensagemAntiga) mensagemAntiga.remove();
 
     let linhasVisiveis = 0;
 
-    linhas.forEach(linha => {
+    lines.forEach(linha => {
         if (linha.cells.length === 1) return;
 
         const nomeCliente = linha.getAttribute('data-cliente-nome') || '';
@@ -303,7 +302,7 @@ function renderizarListaSelecaoCliente(lista) {
     corpo.innerHTML = '';
 
     if (lista.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Nenhum produto encontrado.</td></tr>';
+        corpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Nenhum cliente encontrado.</td></tr>';
         return;
     }
 
@@ -331,20 +330,42 @@ function renderizarListaSelecaoProduto(lista) {
     corpo.innerHTML = '';
 
     if (lista.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="2" class="texto-centralizado">Nenhum cliente encontrado.</td></tr>';
+        corpo.innerHTML = '<tr><td colspan="3" class="texto-centralizado">Nenhum produto encontrado.</td></tr>';
         return;
     }
 
     lista.forEach(p => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><strong>${p.produtoid}</strong></td><td>${p.dsProduto}</td><td>R$ ${parseFloat(p.vlVendaProduto).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>`;
-        tr.addEventListener('click', () => {
-            inputProdId.value = p.produtoid;
-            inputProdDesc.value = p.dsProduto;
-            inputProdPreco.value = p.vlVendaProduto;
-            inputProdQtd.value = 1;
-            subModalProduto.style.display = 'none';
-        });
+
+      
+        const isInativo = p.statusProduto === 'INATIVO'; 
+
+
+        if (isInativo) {
+            tr.style.opacity = '0.5';
+            tr.style.cursor = 'not-allowed';
+            tr.title = 'Este produto está inativo e não pode ser selecionado.';
+        }
+
+        tr.innerHTML = `
+            <td><strong>${p.produtoid}</strong></td>
+            <td>${p.dsProduto} ${isInativo ? '<span style="color: #dc3545; font-weight: bold; font-size: 8pt; margin-left: 5px;">(INATIVO)</span>' : ''}</td>
+            <td>R$ ${parseFloat(p.vlVendaProduto).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+        `;
+
+        if (!isInativo) {
+            tr.addEventListener('click', () => {
+                inputProdId.value = p.produtoid;
+                inputProdDesc.value = p.dsProduto;
+                inputProdPreco.value = p.vlVendaProduto;
+                inputProdQtd.value = 1;
+                subModalProduto.style.display = 'none';
+            });
+        } else {
+            tr.addEventListener('click', () => {
+                alert(`O produto "${p.dsProduto}" está inativo e não pode ser adicionado ao orçamento.`);
+            });
+        }
         corpo.appendChild(tr);
     });
 }
@@ -361,6 +382,18 @@ btnAdicionarItem.addEventListener('click', () => {
 
     if (!pId || !qtd || qtd <= 0) {
         alert('Escolha um produto através do botão Buscar e insira uma quantidade válida!');
+        return;
+    }
+
+    const produtoNoCache = cacheProdutos.find(p => p.produtoid.toString() === pId.toString());
+
+    if (produtoNoCache && produtoNoCache.statusProduto === 'INATIVO')  {
+        alert(`Operação negada: O produto "${desc}" está inativo e não pode ser utilizado.`);
+
+        inputProdId.value = '';
+        inputProdDesc.value = '';
+        inputProdPreco.value = '';
+        inputProdQtd.value = '';
         return;
     }
 
@@ -500,10 +533,10 @@ btnImprimirOrcamento.addEventListener('click', () => {
     
     linhasItens.forEach(linha => {
         if (linha.cells.length >= 4) {
-            const produto = linha.cells[0].textContent;
-            const quantidade = linha.cells[1].textContent;
-            const valorUnitario = linha.cells[2].textContent;
-            const totalItem = linha.cells[3].textContent;
+            const produto = ReadCell(linha, 0);
+            const quantidade = ReadCell(linha, 1);
+            const valorUnitario = ReadCell(linha, 2);
+            const totalItem = ReadCell(linha, 3);
 
             itensHtml += `
                 <tr>
@@ -515,6 +548,10 @@ btnImprimirOrcamento.addEventListener('click', () => {
             `;
         }
     });
+
+    function ReadCell(row, index) {
+        return row.cells[index] ? row.cells[index].textContent : '';
+    }
 
     const janelaImpressao = window.open('', '_blank', 'width=900,height=1100');
     
